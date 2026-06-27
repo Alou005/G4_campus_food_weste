@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Food West – Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e8e8e8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    /* ── Phone Frame (matches Home) ── */
+    .android-frame {
+      width: 393px;
+      height: 852px;
+      background: #f5f7e8;
+      border: 8px solid #161616;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow:
+        0 0 0 2px #444,
+        0 30px 80px rgba(0,0,0,.35);
+    }
+
+    /* ── Dynamic Island ── */
+    .dynamic-island {
+      width: 126px;
+      height: 36px;
+      background: #1a1a1a;
+      border-radius: 0 0 24px 24px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    /* ── Background Pattern ── */
+    .bg-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-pattern img { width: 150%; height: 120%; }
+
+    /* ── Scrollable Content ── */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 20px 20px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: none;
+    }
+    .screen-content::-webkit-scrollbar { display: none; }
+
+    /* ── Header Row ── */
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-bottom: 14px;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a0a;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Points Bar ── */
+    .points-bar {
+      background: #58b947;
+      color: #fff;
+      border-radius: 14px 14px 0 0;
+      padding: 7px 14px;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .points-bar .pts-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Profile Card ── */
+    .profile-card {
+      background: #000;
+      color: #fff;
+      border-radius: 0 0 20px 20px;
+      padding: 20px 22px 24px;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      background: #333;
+    }
+
+    .profile-name {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: rgba(255,255,255,0.55); font-weight: 400; }
+    .info-value { font-weight: 600; color: #fff; }
+
+    /* ── Menu Card ── */
+    .menu-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid #f0f0e8;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: #fafaf2; }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+    .menu-left.logout { color: #cc0000; }
+
+    .menu-arrow { font-size: 20px; color: #bbb; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      height: 84px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 44px;
+      position: relative;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-decoration: none;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 16px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .nav-item.active { background: #333; }
+
+    .nav-label {
+      font-size: 11px;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 400;
+    }
+
+    /* Floating Camera Button */
+    .cam-fab {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #ff9a00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) translateY(-26px);
+      box-shadow: 0 6px 20px rgba(255,154,0,0.5);
+      cursor: pointer;
+      border: 4px solid #1a1a1a;
+      transition: transform 0.2s;
+    }
+    .cam-fab:hover { transform: translateX(-50%) translateY(-28px) scale(1.05); }
+
+    .nav-spacer { width: 64px; }
+  </style>
+</head>
+<body>
+
+  <div class="android-frame">
+
+    <!-- Dynamic Island -->
+    <div class="dynamic-island"></div>
+
+    <!-- Background pattern -->
+    <div class="bg-pattern">
+      <img src="Element/Background.png" alt="" />
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="screen-content">
+
+      <!-- Header -->
+      <div class="header-row">
+        <a href="index.html" class="back-btn" aria-label="Back">
+          <img src="Element/Black back.png" alt="Back" width="20" height="14" />
+        </a>
+        <span class="page-title">Profile</span>
+      </div>
+
+      <!-- Points bar -->
+      <div class="points-bar">
+        <img src="Element/Point.png" width="28" height="20" alt="Points" />
+        <span>150 pts</span>
+        <div class="pts-right">
+          <img src="Element/Third Box Icon.png" width="28" height="20" alt="" />
+        </div>
+      </div>
+
+      <!-- Profile card -->
+      <div class="profile-card">
+        <div class="avatar">A</div>
+        <div class="profile-name">Alou Yonglouher</div>
+        <div class="info-row">
+          <span class="info-label">Student ID</span>
+          <span class="info-value">225N000226</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone Number</span>
+          <span class="info-value">20 77 826 451</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Year of Study</span>
+          <span class="info-value">Year 2</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Student Status</span>
+          <span class="info-value">Studying</span>
+        </div>
+      </div>
+
+      <!-- Menu -->
+      <div class="menu-card">
+        <div class="menu-item">
+          <div class="menu-left">
+            <img src="Element/Password.png" width="28" height="22" alt="" />
+            Change password
+          </div>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item">
+          <div class="menu-left">
+            <img src="Element/Help.png" width="28" height="22" alt="" />
+            Get help
+          </div>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item">
+          <div class="menu-left logout">
+            <img src="Element/Logout.png" width="28" height="22" alt="" />
+            Log out
+          </div>
+          <span class="menu-arrow" style="color:#cc0000;">›</span>
+        </div>
+      </div>
+
+    </div><!-- end .screen-content -->
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Main navigation">
+
+      <!-- Home -->
+      <a href="index.html" class="nav-item">
+        <img src="Element/Home.png" alt="Home Icon" width="30" height="20" />
+        <span class="nav-label">Home</span>
+      </a>
+
+      <!-- Spacer for FAB -->
+      <div class="nav-spacer"></div>
+
+      <!-- Profile (active on this page) -->
+      <a href="profile.html" class="nav-item active">
+        <img src="Element/Profile.png" alt="Profile Icon" width="38" height="25" />
+        <span class="nav-label">Profile</span>
+      </a>
+
+      <!-- Floating Camera Button -->
+      <div class="cam-fab" role="button" aria-label="Scan food" onclick="window.location.href='scanner.html'">
+        <img src="Element/Camera Icon.png" alt="Camera Icon" width="40" height="28" />
+      </div>
+
+    </nav>
+
+  </div><!-- end .android-frame -->
+
+</body>
+</html>
