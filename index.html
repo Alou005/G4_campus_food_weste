@@ -96,6 +96,16 @@
       font-size: 12px; font-weight: 700;
       color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1.2px;
     }
+
+    /* Scrollable meal list */
+    .meal-scroll {
+      max-height: 120px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .meal-scroll::-webkit-scrollbar { display: none; }
+
     .meal-row {
       display: flex; align-items: center;
       justify-content: space-between; padding: 8px 0;
@@ -105,7 +115,6 @@
     .meal-left { display: flex; flex-direction: column; }
     .meal-name { font-size: 15px; font-weight: 500; color: #fff; }
     .meal-pts { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
-    /* when meal is done, show the eating status label in a nicer colour */
     .meal-pts.done { color: #ffcc00; }
     .checkbox {
       width: 28px; height: 28px; border-radius: 7px;
@@ -210,37 +219,39 @@
         <span class="card-label">Daily Manage</span>
         <img src="Element/Second Box Icon.png" alt="Clock Icon" width="30" height="20" />
       </div>
-      <div class="meal-row">
-        <div class="meal-left">
-          <span class="meal-name">Breakfast</span>
-          <span class="meal-pts" id="bfPts">Not scanned yet</span>
+      <div class="meal-scroll">
+        <div class="meal-row">
+          <div class="meal-left">
+            <span class="meal-name">Breakfast</span>
+            <span class="meal-pts" id="bfPts">Not scanned yet</span>
+          </div>
+          <div class="checkbox" id="cbBreakfast">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="2 8 6 12 13 3"/>
+            </svg>
+          </div>
         </div>
-        <div class="checkbox" id="cbBreakfast">
-          <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="2 8 6 12 13 3"/>
-          </svg>
+        <div class="meal-row">
+          <div class="meal-left">
+            <span class="meal-name">Lunch</span>
+            <span class="meal-pts" id="lunchPts">Not scanned yet</span>
+          </div>
+          <div class="checkbox" id="cbLunch">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="2 8 6 12 13 3"/>
+            </svg>
+          </div>
         </div>
-      </div>
-      <div class="meal-row">
-        <div class="meal-left">
-          <span class="meal-name">Lunch</span>
-          <span class="meal-pts" id="lunchPts">Not scanned yet</span>
-        </div>
-        <div class="checkbox" id="cbLunch">
-          <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="2 8 6 12 13 3"/>
-          </svg>
-        </div>
-      </div>
-      <div class="meal-row">
-        <div class="meal-left">
-          <span class="meal-name">Dinner</span>
-          <span class="meal-pts" id="dinnerPts">Not scanned yet</span>
-        </div>
-        <div class="checkbox" id="cbDinner">
-          <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="2 8 6 12 13 3"/>
-          </svg>
+        <div class="meal-row">
+          <div class="meal-left">
+            <span class="meal-name">Dinner</span>
+            <span class="meal-pts" id="dinnerPts">Not scanned yet</span>
+          </div>
+          <div class="checkbox" id="cbDinner">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#ff9a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="2 8 6 12 13 3"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -301,7 +312,6 @@
       };
       localStorage.setItem('cfwState', JSON.stringify(state));
     }
-    // Ensure meals object always has all keys
     if (!state.meals) state.meals = { Breakfast: null, Lunch: null, Dinner: null };
     return state;
   }
@@ -310,7 +320,6 @@
     const state = getState();
     const meals = state.meals;
 
-    // Meal rows: key = meal name, cb = checkbox id, pts = subtitle id
     const map = {
       Breakfast: { cb: 'cbBreakfast', pts: 'bfPts' },
       Lunch:     { cb: 'cbLunch',     pts: 'lunchPts' },
@@ -321,13 +330,12 @@
     let scansDone = 0;
 
     for (const [meal, ids] of Object.entries(map)) {
-      const data  = meals[meal];          // null  OR  { foodName, label, points, tier }
+      const data  = meals[meal];
       const cb    = document.getElementById(ids.cb);
       const ptsEl = document.getElementById(ids.pts);
 
       if (data && data.points != null) {
         cb.classList.add('checked');
-        // Show eating-status label + points, e.g. "Eat clean · +100 pts"
         ptsEl.textContent = `${data.label} · +${data.points} pts`;
         ptsEl.classList.add('done');
         todayPts  += data.points;
