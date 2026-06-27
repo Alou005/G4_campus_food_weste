@@ -14,22 +14,30 @@
     }
     .bg-pattern { position: fixed; inset: 0; opacity: 0.05; pointer-events: none; z-index: 0; overflow: hidden; }
     .bg-pattern img { width: 150%; height: 120%; }
+
+    /* ── SCROLLABLE CONTENT ── */
     .screen-content {
-      flex: 1; overflow-y: auto;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       padding-top: max(env(safe-area-inset-top), 14px);
-      padding-left: 20px; padding-right: 20px; padding-bottom: 20px;
+      padding-left: 16px; padding-right: 16px; padding-bottom: 20px;
       position: relative; z-index: 2;
-      display: flex; flex-direction: column; scrollbar-width: none;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      scrollbar-width: none;
+      min-height: 0;
     }
     .screen-content::-webkit-scrollbar { display: none; }
 
     .header-row {
       display: flex; align-items: center; justify-content: center;
-      position: relative; padding-bottom: 14px;
+      position: relative; flex-shrink: 0;
     }
     .back-btn {
-      position: absolute; left: 0; width: 36px; height: 36px;
-      border-radius: 50%; background: #000;
+      position: absolute; left: 0;
+      width: 36px; height: 36px; border-radius: 50%; background: #000;
       display: flex; align-items: center; justify-content: center; text-decoration: none;
     }
     .page-title {
@@ -42,6 +50,7 @@
       background: #58b947; color: #fff; border-radius: 14px 14px 0 0;
       padding: 7px 14px; font-size: 15px; font-weight: 600;
       display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
     }
     .points-bar .pts-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
     .pts-today-badge {
@@ -52,21 +61,22 @@
     /* Profile card */
     .profile-card {
       background: #000; color: #fff;
-      border-radius: 0 0 20px 20px; padding: 20px 22px 24px; margin-bottom: 14px;
+      border-radius: 0 0 20px 20px; padding: 20px 22px 24px;
+      flex-shrink: 0;
     }
     .avatar {
       width: 72px; height: 72px; border: 3px solid #fff; border-radius: 50%;
       margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
       font-size: 28px; font-weight: 700;
     }
-    .profile-name { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 16px; }
+    .profile-name { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 16px; word-break: break-word; }
     .info-row {
-      display: flex; justify-content: space-between; padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px; gap: 12px;
     }
     .info-row:last-child { border-bottom: none; }
-    .info-label { color: rgba(255,255,255,0.55); }
-    .info-value { font-weight: 600; color: #fff; }
+    .info-label { color: rgba(255,255,255,0.55); flex-shrink: 0; }
+    .info-value { font-weight: 600; color: #fff; text-align: right; word-break: break-all; }
     .info-value.pts { color: #ffcc00; font-size: 15px; }
 
     /* Today's scans */
@@ -79,27 +89,34 @@
     .meal-pill {
       display: flex; align-items: center; justify-content: space-between;
       background: rgba(255,255,255,0.07); border-radius: 12px;
-      padding: 8px 14px; font-size: 12px; font-weight: 500;
+      padding: 10px 14px; font-size: 12px; font-weight: 500;
       color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
+      gap: 8px;
     }
     .meal-pill.done { background: rgba(88,185,71,0.15); color: #7de86a; border-color: #58b947; }
-    .meal-pill .pill-left { display: flex; align-items: center; gap: 6px; }
-    .meal-pill .pill-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .meal-pill .pill-left {
+      display: flex; align-items: center; gap: 6px;
+      min-width: 0; flex: 1; overflow: hidden;
+    }
+    .pill-food { font-size: 11px; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .meal-pill .pill-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
     .pill-pts { font-weight: 700; font-size: 13px; }
-    .pill-label { font-size: 10px; opacity: 0.7; }
+    .pill-label { font-size: 10px; opacity: 0.7; white-space: nowrap; }
 
     /* Menu card */
-    .menu-card { background: #fff; border-radius: 20px; overflow: hidden; }
+    .menu-card { background: #fff; border-radius: 20px; overflow: hidden; flex-shrink: 0; }
     .menu-item {
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 20px; border-bottom: 1px solid #f0f0e8;
       cursor: pointer; transition: background 0.15s;
     }
     .menu-item:last-child { border-bottom: none; }
-    .menu-item:hover { background: #fafaf2; }
+    .menu-item:active { background: #fafaf2; }
     .menu-left { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500; color: #1a1a1a; }
     .menu-left.danger { color: #cc0000; }
     .menu-arrow { font-size: 20px; color: #bbb; }
+
+    .scroll-end-pad { height: 4px; flex-shrink: 0; }
 
     /* Bottom Nav */
     .bottom-nav {
@@ -121,9 +138,8 @@
       display: flex; align-items: center; justify-content: center;
       position: absolute; left: 50%; transform: translateX(-50%) translateY(-26px);
       box-shadow: 0 6px 20px rgba(255,154,0,0.5); cursor: pointer;
-      border: 4px solid #1a1a1a; transition: transform 0.2s;
+      border: 4px solid #1a1a1a;
     }
-    .cam-fab:hover { transform: translateX(-50%) translateY(-28px) scale(1.05); }
     .nav-spacer { width: 64px; }
   </style>
 </head>
@@ -140,45 +156,46 @@
       <span class="page-title">Profile</span>
     </div>
 
-    <!-- Points bar -->
-    <div class="points-bar">
-      <img src="Element/Point.png" width="28" height="20" alt="" onerror="this.style.display='none'" />
-      <span id="totalPtsDisplay">0 pts</span>
-      <div class="pts-right">
-        <span class="pts-today-badge" id="todayPtsDisplay">+0 today</span>
-        <img src="Element/Third Box Icon.png" width="28" height="20" alt="" onerror="this.style.display='none'" />
-      </div>
-    </div>
-
-    <!-- Profile card -->
-    <div class="profile-card">
-      <div class="avatar" id="profileAvatar">?</div>
-      <div class="profile-name" id="profileName">—</div>
-
-      <div class="info-row">
-        <span class="info-label">Student ID</span>
-        <span class="info-value" id="profileId">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Phone Number</span>
-        <span class="info-value" id="profilePhone">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Year of Study</span>
-        <span class="info-value" id="profileYear">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Student Status</span>
-        <span class="info-value" id="profileStatus">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Total Points</span>
-        <span class="info-value pts" id="totalPtsCard">0 pts</span>
+    <!-- Points bar + Profile card together as a unit -->
+    <div style="flex-shrink:0;">
+      <div class="points-bar">
+        <img src="Element/Point.png" width="28" height="20" alt="" onerror="this.style.display='none'" />
+        <span id="totalPtsDisplay">0 pts</span>
+        <div class="pts-right">
+          <span class="pts-today-badge" id="todayPtsDisplay">+0 today</span>
+          <img src="Element/Third Box Icon.png" width="28" height="20" alt="" onerror="this.style.display='none'" />
+        </div>
       </div>
 
-      <div class="today-summary">
-        <div class="today-summary-title">Today's Scans</div>
-        <div class="meal-pill-row" id="mealPillRow"></div>
+      <div class="profile-card">
+        <div class="avatar" id="profileAvatar">?</div>
+        <div class="profile-name" id="profileName">—</div>
+
+        <div class="info-row">
+          <span class="info-label">Student ID</span>
+          <span class="info-value" id="profileId">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value" id="profilePhone">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Year</span>
+          <span class="info-value" id="profileYear">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          <span class="info-value" id="profileStatus">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total Points</span>
+          <span class="info-value pts" id="totalPtsCard">0 pts</span>
+        </div>
+
+        <div class="today-summary">
+          <div class="today-summary-title">Today's Scans</div>
+          <div class="meal-pill-row" id="mealPillRow"></div>
+        </div>
       </div>
     </div>
 
@@ -213,6 +230,8 @@
         <span class="menu-arrow" style="color:#cc0000;">›</span>
       </div>
     </div>
+
+    <div class="scroll-end-pad"></div>
   </div>
 
   <nav class="bottom-nav">
@@ -231,7 +250,6 @@
   </nav>
 
 <script>
-  // ── Auth guard ──
   (function() {
     let u = null;
     try { u = JSON.parse(localStorage.getItem('cfwUser')); } catch(e) {}
@@ -260,7 +278,6 @@
     Dinner:    { icon: '🌙' }
   };
 
-  // Avatar colour based on initial
   function avatarColor(initial) {
     const colors = ['#c43000','#0011f4','#ff9a00','#58b947','#9b00c4','#007acc'];
     return colors[(initial || 'A').charCodeAt(0) % colors.length];
@@ -270,26 +287,22 @@
     const user  = getUser();
     const state = getState();
 
-    // Avatar
     const av = document.getElementById('profileAvatar');
     av.textContent = user.initial || (user.firstName ? user.firstName[0].toUpperCase() : '?');
     av.style.background = avatarColor(av.textContent);
 
-    // Name & info
     document.getElementById('profileName').textContent   = user.fullName   || '—';
     document.getElementById('profileId').textContent     = user.studentId  || '—';
     document.getElementById('profilePhone').textContent  = user.phone      || '—';
     document.getElementById('profileYear').textContent   = user.yearOfStudy   || '—';
     document.getElementById('profileStatus').textContent = user.studentStatus || '—';
 
-    // Points
     document.getElementById('totalPtsDisplay').textContent = (state.totalPoints || 0) + ' pts';
     document.getElementById('totalPtsCard').textContent    = (state.totalPoints || 0) + ' pts';
     let todayPts = 0;
     for (const m of Object.values(state.meals)) { if (m) todayPts += (m.points || 0); }
     document.getElementById('todayPtsDisplay').textContent = `+${todayPts} today`;
 
-    // Meal pills
     const row = document.getElementById('mealPillRow');
     row.innerHTML = '';
     for (const [meal, meta] of Object.entries(MEAL_META)) {
@@ -300,7 +313,7 @@
         pill.innerHTML = `
           <div class="pill-left">
             <span>${meta.icon} ${meal}</span>
-            <span style="opacity:0.6;font-size:11px;">· ${data.foodName || ''}</span>
+            <span class="pill-food">· ${data.foodName || ''}</span>
           </div>
           <div class="pill-right">
             <span class="pill-pts">+${data.points} pts</span>

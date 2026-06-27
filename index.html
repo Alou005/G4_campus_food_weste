@@ -18,19 +18,26 @@
       pointer-events: none; z-index: 0; overflow: hidden;
     }
     .bg-pattern img { width: 150%; height: 120%; }
+
+    /* ── SCROLLABLE CONTENT AREA ── */
     .screen-content {
-      flex: 1; overflow-y: auto;
-      padding: env(safe-area-inset-top, 14px) 20px 20px;
-      padding-top: max(env(safe-area-inset-top), 14px);
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: max(env(safe-area-inset-top), 14px) 16px 20px;
       position: relative; z-index: 2;
-      display: flex; flex-direction: column; scrollbar-width: none;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      scrollbar-width: none;
+      min-height: 0;
     }
     .screen-content::-webkit-scrollbar { display: none; }
 
     /* Top Bar */
     .topbar {
       display: flex; align-items: center;
-      justify-content: space-between; padding-bottom: 10px;
+      justify-content: space-between; flex-shrink: 0;
     }
     .logo-wrap { display: flex; align-items: center; gap: 10px; }
     .logo-icon { width: 60px; height: 45px; flex-shrink: 0; }
@@ -48,7 +55,7 @@
     .settings-btn svg { width: 20px; height: 20px; fill: #2a2a1a; }
 
     /* Greeting */
-    .greeting { display: flex; align-items: center; gap: 12px; padding: 10px 0 14px; }
+    .greeting { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
     .avatar {
       width: 46px; height: 46px; border-radius: 50%;
       background: #1a1a1a; color: #fff; font-size: 18px;
@@ -62,13 +69,16 @@
     }
     .greeting-info .date { font-size: 12px; color: #666; font-weight: 400; margin-top: 2px; }
 
-    /* Cards */
-    .card { border-radius: 20px; overflow: hidden; position: relative; margin-bottom: 14px; }
+    /* Cards — flex-shrink: 0 prevents squishing; content drives height */
+    .card {
+      border-radius: 20px; overflow: visible;
+      position: relative; flex-shrink: 0;
+    }
 
     /* Card 1: Status */
     .card-status {
       background: linear-gradient(135deg, #ff9a00 0%, #c43000 42%, #0011f4 100%);
-      padding: 20px 22px 22px; min-height: 130px;
+      padding: 20px 22px 22px;
     }
     .card-status-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
     .card-status-header .card-label {
@@ -80,7 +90,8 @@
       letter-spacing: 1px; text-transform: uppercase; line-height: 1; font-style: italic;
     }
     .status-sub {
-      font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 6px; font-weight: 400;
+      font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 6px; font-weight: 400;
+      word-break: break-all;
     }
 
     /* Card 2: Daily Manage */
@@ -98,13 +109,13 @@
     }
     .meal-row {
       display: flex; align-items: center;
-      justify-content: space-between; padding: 8px 0;
+      justify-content: space-between; padding: 10px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .meal-row:last-child { border-bottom: none; }
-    .meal-left { display: flex; flex-direction: column; }
+    .meal-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; padding-right: 10px; }
     .meal-name { font-size: 15px; font-weight: 500; color: #fff; }
-    .meal-pts { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    .meal-pts { font-size: 11px; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .meal-pts.done { color: #ffcc00; }
     .checkbox {
       width: 28px; height: 28px; border-radius: 7px;
@@ -119,15 +130,15 @@
     /* Card 3: Score */
     .card-score {
       background: linear-gradient(135deg, #0011f4 0%, #000830 55%, #000 100%);
-      padding: 18px 22px 22px; margin-bottom: 0;
+      padding: 18px 22px 22px;
     }
     .card-score-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
     .card-score-header .card-label {
       font-size: 14px; font-weight: 700; color: #fff;
       text-transform: uppercase; letter-spacing: 1.2px;
     }
-    .score-number { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-    .score-breakdown { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 10px; }
+    .score-number { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .score-breakdown { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 10px; line-height: 1.5; }
     .progress-track {
       background: rgba(255,255,255,0.15); border-radius: 50px;
       height: 10px; width: 100%; overflow: hidden; margin-bottom: 8px;
@@ -137,8 +148,11 @@
       background: linear-gradient(90deg, #ff9a00, #ffcc00);
       border-radius: 50px; transition: width 0.6s ease;
     }
-    .progress-meta { display: flex; justify-content: space-between; }
+    .progress-meta { display: flex; justify-content: space-between; gap: 8px; }
     .progress-meta span { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+    /* Spacer pushes nothing — gap handles spacing */
+    .scroll-end-pad { height: 4px; flex-shrink: 0; }
 
     /* Bottom Nav */
     .bottom-nav {
@@ -162,7 +176,7 @@
       box-shadow: 0 6px 20px rgba(255,154,0,0.5); cursor: pointer;
       border: 4px solid #1a1a1a; transition: transform 0.2s;
     }
-    .cam-fab:hover { transform: translateX(-50%) translateY(-28px) scale(1.05); }
+    .cam-fab:active { transform: translateX(-50%) translateY(-28px) scale(1.05); }
     .nav-spacer { width: 64px; }
   </style>
 </head>
@@ -249,6 +263,8 @@
         <span id="progressLabel">Keep going!</span>
       </div>
     </div>
+
+    <div class="scroll-end-pad"></div>
   </div>
 
   <!-- Bottom Nav -->
@@ -268,26 +284,22 @@
   </nav>
 
 <script>
-  // ── Auth guard ──
   (function() {
     let u = null;
     try { u = JSON.parse(localStorage.getItem('cfwUser')); } catch(e) {}
     if (!u || !u.loggedIn) window.location.replace('login.html');
   })();
 
-  // ── Load user info ──
   function getUser() {
     try { return JSON.parse(localStorage.getItem('cfwUser')) || {}; } catch(e) { return {}; }
   }
 
-  // ── Date ──
   const now = new Date();
   const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   document.getElementById('todayDate').textContent =
     `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
 
-  // ── State ──
   function getState() {
     const today = new Date().toDateString();
     let s = null;
@@ -305,14 +317,12 @@
     const user  = getUser();
     const state = getState();
 
-    // Greeting — use first name from registered user
     const first = user.firstName || user.fullName || 'Student';
     document.getElementById('homeGreeting').textContent = 'Hello, ' + first;
     document.getElementById('homeAvatar').textContent   = user.initial || first[0].toUpperCase();
     document.getElementById('statusSub').textContent    =
       user.studentId ? `ID: ${user.studentId}  ·  ${user.yearOfStudy || ''}` : 'Campus Food West Member';
 
-    // Meals
     const map = {
       Breakfast: { cb: 'cbBreakfast', pts: 'bfPts' },
       Lunch:     { cb: 'cbLunch',     pts: 'lunchPts' },
@@ -336,7 +346,6 @@
       }
     }
 
-    // Score
     const pct = Math.round((todayPts / 300) * 100);
     document.getElementById('scorePercent').textContent   = pct + '%';
     document.getElementById('scoreBreakdown').textContent =

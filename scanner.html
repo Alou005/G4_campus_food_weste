@@ -14,6 +14,7 @@
       display: flex; flex-direction: column; height: 100dvh;
     }
 
+    /* Header */
     .header {
       display: flex; align-items: center; justify-content: center;
       position: relative;
@@ -29,9 +30,10 @@
     }
     .page-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; }
 
+    /* Viewfinder */
     .viewfinder-wrap {
-      position: relative; margin: 0 20px; border-radius: 20px;
-      overflow: hidden; background: #000; flex-shrink: 0; height: 240px;
+      position: relative; margin: 0 16px; border-radius: 20px;
+      overflow: hidden; background: #000; flex-shrink: 0; height: 220px;
     }
     #videoFeed { width: 100%; height: 100%; object-fit: cover; display: block; }
     .scan-corners { position: absolute; inset: 0; pointer-events: none; }
@@ -46,16 +48,11 @@
       animation: scanMove 2s ease-in-out infinite; opacity: 0;
     }
     .scan-line.active { opacity: 1; }
-    @keyframes scanMove {
-      0%   { top: 16px; }
-      50%  { top: calc(100% - 16px); }
-      100% { top: 16px; }
-    }
+    @keyframes scanMove { 0% { top: 16px; } 50% { top: calc(100% - 16px); } 100% { top: 16px; } }
     .cam-placeholder {
       position: absolute; inset: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 10px;
-      background: #111; color: rgba(255,255,255,0.4);
-      font-size: 13px; text-align: center; padding: 20px;
+      background: #111; color: rgba(255,255,255,0.4); font-size: 13px; text-align: center; padding: 20px;
     }
     .cam-placeholder svg { width: 48px; height: 48px; opacity: 0.3; }
     .pulse-ring {
@@ -67,21 +64,28 @@
       content: ''; width: 80px; height: 80px; border-radius: 50%;
       border: 3px solid #ff9a00; animation: pulse 1.2s ease-out infinite;
     }
-    @keyframes pulse {
-      0%   { transform: scale(0.8); opacity: 1; }
-      100% { transform: scale(2);   opacity: 0; }
+    @keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+
+    /* Camera status badge */
+    .cam-status {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,0.65); border-radius: 20px;
+      padding: 4px 10px; font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 5px;
     }
+    .cam-status.live { color: #58b947; }
+    .cam-status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .cam-status.live .dot { animation: blink 1.2s ease-in-out infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
 
     /* API Key Banner */
     .api-banner {
-      margin: 6px 20px 0; padding: 10px 14px;
+      margin: 6px 16px 0; padding: 10px 14px;
       background: rgba(255,154,0,0.12); border: 1px solid #ff9a00;
       border-radius: 14px; flex-shrink: 0; display: none;
     }
     .api-banner.visible { display: block; }
-    .api-banner-title {
-      font-size: 12px; font-weight: 700; color: #ff9a00; margin-bottom: 6px;
-    }
+    .api-banner-title { font-size: 12px; font-weight: 700; color: #ff9a00; margin-bottom: 6px; }
     .api-banner-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 8px; line-height: 1.5; }
     .api-banner-sub a { color: #ff9a00; }
     .api-key-row { display: flex; gap: 8px; }
@@ -100,7 +104,7 @@
     /* Meal selector */
     .meal-selector {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 20px 4px; flex-shrink: 0;
+      padding: 8px 16px 4px; flex-shrink: 0;
     }
     .meal-selector label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; white-space: nowrap; }
     .meal-selector select {
@@ -113,7 +117,7 @@
     /* Controls */
     .controls {
       display: flex; align-items: center; justify-content: center;
-      gap: 16px; padding: 8px 20px 6px; flex-shrink: 0;
+      gap: 16px; padding: 8px 16px 6px; flex-shrink: 0;
     }
     .ctrl-btn {
       display: flex; flex-direction: column; align-items: center; gap: 5px;
@@ -122,25 +126,31 @@
       font-size: 11px; cursor: pointer; transition: background 0.2s;
       flex: 1; max-width: 90px;
     }
-    .ctrl-btn:hover:not(:disabled) { background: rgba(255,255,255,0.13); }
+    .ctrl-btn:active:not(:disabled) { background: rgba(255,255,255,0.13); }
     .ctrl-btn svg { width: 22px; height: 22px; fill: #fff; }
     .ctrl-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .scan-fab {
       width: 68px; height: 68px; border-radius: 50%; background: #ff9a00;
       border: none; display: flex; align-items: center; justify-content: center;
       cursor: pointer; box-shadow: 0 6px 24px rgba(255,154,0,0.5);
-      transition: transform 0.2s; flex-shrink: 0;
+      transition: transform 0.15s; flex-shrink: 0;
     }
-    .scan-fab:hover { transform: scale(1.06); }
+    .scan-fab:active { transform: scale(0.96); }
     .scan-fab svg { width: 30px; height: 30px; fill: #fff; }
     .scan-fab.scanning { background: #cc3300; box-shadow: 0 6px 24px rgba(204,51,0,0.5); }
 
-    /* Result Panel */
+    /* ── RESULT PANEL — scrollable ── */
     .result-panel {
-      flex: 1; overflow-y: auto; margin: 0 20px 8px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 16px 8px;
       border-radius: 20px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
-      scrollbar-width: none; display: flex; flex-direction: column; min-height: 0;
+      scrollbar-width: none;
+      display: flex; flex-direction: column;
+      min-height: 0;
     }
     .result-panel::-webkit-scrollbar { display: none; }
 
@@ -148,7 +158,7 @@
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 8px;
       color: rgba(255,255,255,0.25); font-size: 13px; text-align: center; padding: 20px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
     .result-idle svg { width: 36px; height: 36px; opacity: 0.2; margin-bottom: 4px; }
 
@@ -169,12 +179,13 @@
       40%            { transform: translateY(-8px); opacity: 1; }
     }
 
-    .result-content { display: none; flex-direction: column; padding: 4px 0; }
+    .result-content { display: none; flex-direction: column; }
     .result-content.visible { display: flex; }
 
     .result-food-name {
       font-size: 15px; font-weight: 700; color: #fff;
-      padding: 12px 18px 4px; letter-spacing: 0.3px;
+      padding: 14px 18px 4px; letter-spacing: 0.3px;
+      word-break: break-word;
     }
     .pts-earned-banner {
       margin: 4px 18px 8px; border-radius: 12px; padding: 10px 14px;
@@ -184,28 +195,34 @@
     .pts-earned-banner.medium { background: rgba(255,154,0,0.18);  border: 1px solid #ff9a00; }
     .pts-earned-banner.low    { background: rgba(255,80,0,0.18);   border: 1px solid #ff5000; }
     .pts-earned-banner.vlow   { background: rgba(200,0,0,0.18);    border: 1px solid #c00; }
-    .pts-earned-icon { font-size: 22px; }
-    .pts-earned-text { flex: 1; }
+    .pts-earned-icon { font-size: 22px; flex-shrink: 0; }
+    .pts-earned-text { flex: 1; min-width: 0; }
     .pts-earned-label { font-size: 12px; color: rgba(255,255,255,0.6); }
     .pts-earned-value { font-size: 18px; font-weight: 700; color: #fff; }
 
     .result-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 11px 18px; border-bottom: 1.5px solid rgba(255,255,255,0.07);
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 11px 18px; border-bottom: 1px solid rgba(255,255,255,0.07);
+      gap: 12px;
     }
     .result-row:last-child { border-bottom: none; }
-    .row-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); flex: 1; }
-    .row-value { font-size: 13px; font-weight: 600; color: #fff; text-align: right; }
+    .row-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+    .row-value { font-size: 13px; font-weight: 600; color: #fff; text-align: right; word-break: break-word; }
+
+    .status-note {
+      margin: 0 18px 14px; font-size: 12px; color: rgba(255,255,255,0.5);
+      line-height: 1.6; word-break: break-word;
+    }
 
     /* Save button */
     .save-btn {
-      margin: 0 18px 14px; background: #58b947; color: #fff; border: none;
-      border-radius: 14px; padding: 14px; font-family: 'Poppins', sans-serif;
+      margin: 0 18px 16px; background: #58b947; color: #fff; border: none;
+      border-radius: 14px; padding: 14px 12px; font-family: 'Poppins', sans-serif;
       font-size: 14px; font-weight: 700; cursor: pointer;
-      display: none; width: calc(100% - 36px); transition: background 0.2s;
-      letter-spacing: 0.3px;
+      display: none; transition: background 0.2s;
+      letter-spacing: 0.3px; word-break: break-word;
     }
-    .save-btn:hover:not(:disabled) { background: #4da83e; }
+    .save-btn:active:not(:disabled) { background: #4da83e; }
     .save-btn.visible { display: block; }
     .save-btn:disabled { background: #444; color: rgba(255,255,255,0.4); cursor: not-allowed; }
 
@@ -220,7 +237,7 @@
     .nav-item {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 4px; text-decoration: none;
-      color: #fff; padding: 8px 16px; border-radius: 16px; transition: background 0.2s;
+      color: #fff; padding: 8px 16px; border-radius: 16px;
     }
     .nav-label { font-size: 11px; color: #fff; font-family: 'Poppins', sans-serif; }
     .nav-spacer { width: 64px; }
@@ -248,7 +265,10 @@
     <video id="videoFeed" autoplay playsinline muted></video>
     <div class="cam-placeholder" id="camPlaceholder">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 15a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>
-      Tap the camera button below to start
+      Tap the <strong style="color:#ff9a00;">camera button</strong> below to start
+    </div>
+    <div class="cam-status" id="camStatus">
+      <div class="dot"></div> Off
     </div>
     <div class="scan-corners">
       <div class="corner tl"></div><div class="corner tr"></div>
@@ -263,7 +283,7 @@
     <div class="api-banner-title">🔑 Gemini API Key Required (Free)</div>
     <div class="api-banner-sub">
       Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
-      → Sign in → Get API key → Copy it → Paste below
+      → Sign in → Get API key → Copy → Paste below
     </div>
     <div class="api-key-row">
       <input type="password" id="apiKeyInput" placeholder="AIza..." />
@@ -281,9 +301,9 @@
     </select>
   </div>
 
-  <!-- Controls: Flip | Camera | Analyse -->
+  <!-- Controls: Flip | Camera FAB | Analyse -->
   <div class="controls">
-    <button class="ctrl-btn" onclick="flipCamera()">
+    <button class="ctrl-btn" onclick="flipCamera()" id="flipBtn">
       <svg viewBox="0 0 24 24"><path d="M7.11 8.53 5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42A5.2 5.2 0 0 1 6.09 13zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c2.84.48 5 2.94 5 5.91s-2.16 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93s-3.05-7.44-7-7.93z"/></svg>
       Flip
     </button>
@@ -297,10 +317,10 @@
   </div>
 
   <!-- Result Panel -->
-  <div class="result-panel">
+  <div class="result-panel" id="resultPanel">
     <div class="result-idle" id="resultIdle">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-18a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm-1 9h2v6h-2v-6z"/></svg>
-      Start camera → aim at your food<br>then tap <strong style="color:#ff9a00">Analyse</strong>
+      Start camera → aim at your food<br>then tap <strong style="color:#ff9a00;">Analyse</strong>
     </div>
     <div class="thinking" id="thinkingState">
       <div class="dots"><span></span><span></span><span></span></div>
@@ -324,9 +344,10 @@
         <span class="row-value" id="rowWaste">—</span>
       </div>
       <div class="result-row">
-        <span class="row-label">Eating status</span>
+        <span class="row-label">Status</span>
         <span class="row-value" id="rowStatus">—</span>
       </div>
+      <div class="status-note" id="statusNote"></div>
     </div>
     <button class="save-btn" id="saveBtn" onclick="saveScan()">💾 Save to Home &amp; Profile</button>
   </div>
@@ -334,25 +355,25 @@
   <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <img src="Element/Home.png" alt="Home" width="28" height="20" />
+      <img src="Element/Home.png" alt="Home" width="28" height="20" onerror="this.style.display='none'" />
       <span class="nav-label">Home</span>
     </a>
     <div class="nav-spacer"></div>
     <a href="profile.html" class="nav-item">
-      <img src="Element/Profile.png" alt="Profile" width="34" height="22" />
+      <img src="Element/Profile.png" alt="Profile" width="34" height="22" onerror="this.style.display='none'" />
       <span class="nav-label">Profile</span>
     </a>
     <div class="cam-fab-nav" onclick="window.location.href='scanner.html'">
-      <img src="Element/Camera Icon.png" alt="Scan" width="30" height="22" />
+      <img src="Element/Camera Icon.png" alt="Scan" width="30" height="22" onerror="this.style.display='none'" />
     </div>
   </nav>
 
 <script>
-  // ══════════════════════════════════════════════
-  //  PASTE YOUR FREE GEMINI KEY HERE (optional)
-  //  Get it free: aistudio.google.com/app/apikey
-  // ══════════════════════════════════════════════
-  const HARDCODED_KEY = ''; // e.g. 'AIzaSyXXXXXXXXXXXXXXXXXX'
+  // ════════════════════════════════════════════
+  //  OPTIONAL: paste your free Gemini key here
+  //  Get it at: aistudio.google.com/app/apikey
+  // ════════════════════════════════════════════
+  const HARDCODED_KEY = '';
 
   // ── API key helpers ──
   function getApiKey() {
@@ -363,11 +384,11 @@
     if (!val || val.length < 10) { alert('Please enter a valid Gemini API key.'); return; }
     localStorage.setItem('cfwGeminiKey', val);
     document.getElementById('apiBanner').classList.remove('visible');
+    document.getElementById('apiKeyInput').value = val;
   }
-  // Show banner if no key saved
   if (!getApiKey()) document.getElementById('apiBanner').classList.add('visible');
 
-  // ── Scoring ──
+  // ── Scoring tiers ──
   function scoreFromWaste(pct) {
     pct = Number(pct) || 0;
     if (pct <= 10) return { label: 'Eat clean',               points: 100, tier: 'high'   };
@@ -399,54 +420,129 @@
   }
   function saveState(s) { localStorage.setItem('cfwState', JSON.stringify(s)); }
 
-  // ── Camera ──
-  let stream = null, facingMode = 'environment', cameraActive = false;
+  // ════════════════════════════════════════════
+  //  CAMERA
+  // ════════════════════════════════════════════
+  let stream = null;
+  let facingMode = 'environment';
+  let cameraActive = false;
 
-  async function toggleCamera() { cameraActive ? stopCamera() : await startCamera(); }
+  async function toggleCamera() {
+    if (cameraActive) stopCamera();
+    else await startCamera();
+  }
 
   async function startCamera() {
     try {
+      // Stop any existing stream first
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+
       stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false
+        video: {
+          facingMode: { ideal: facingMode },
+          width:  { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
       });
+
       const v = document.getElementById('videoFeed');
-      v.srcObject = stream; await v.play();
+      v.srcObject = stream;
+
+      // Wait for video to actually play
+      await new Promise((resolve, reject) => {
+        v.onloadedmetadata = () => {
+          v.play().then(resolve).catch(reject);
+        };
+        v.onerror = reject;
+        // Safety timeout
+        setTimeout(resolve, 3000);
+      });
+
       cameraActive = true;
       document.getElementById('camPlaceholder').style.display = 'none';
       document.getElementById('scanLine').classList.add('active');
       document.getElementById('scanBtn').classList.add('scanning');
       document.getElementById('captureBtn').disabled = false;
+
+      // Update camera status badge
+      const status = document.getElementById('camStatus');
+      status.textContent = '';
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      status.appendChild(dot);
+      status.appendChild(document.createTextNode(' LIVE'));
+      status.classList.add('live');
+
+      // Swap FAB icon to stop square
       document.getElementById('scanBtn').innerHTML =
         `<svg viewBox="0 0 24 24" fill="#fff" width="30" height="30"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
+
     } catch(e) {
-      alert('Camera access denied. Please allow camera permission and try again.');
+      console.error('Camera error:', e);
+      let msg = 'Camera access denied or unavailable.';
+      if (e.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow camera access in your browser settings.';
+      else if (e.name === 'NotFoundError') msg = 'No camera found on this device.';
+      else if (e.name === 'NotReadableError') msg = 'Camera is already in use by another app.';
+      alert(msg);
     }
   }
 
   function stopCamera() {
-    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    document.getElementById('videoFeed').srcObject = null;
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+    const v = document.getElementById('videoFeed');
+    v.srcObject = null;
     cameraActive = false;
+
     document.getElementById('camPlaceholder').style.display = 'flex';
     document.getElementById('scanLine').classList.remove('active');
     document.getElementById('scanBtn').classList.remove('scanning');
     document.getElementById('captureBtn').disabled = true;
+
+    // Update status badge
+    const status = document.getElementById('camStatus');
+    status.className = 'cam-status';
+    status.textContent = '';
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    status.appendChild(dot);
+    status.appendChild(document.createTextNode(' Off'));
+
+    // Restore FAB icon
     document.getElementById('scanBtn').innerHTML =
       `<svg viewBox="0 0 24 24" fill="#fff" width="30" height="30"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
   }
 
   async function flipCamera() {
     facingMode = facingMode === 'environment' ? 'user' : 'environment';
-    if (cameraActive) { stopCamera(); await startCamera(); }
+    if (cameraActive) {
+      stopCamera();
+      await startCamera();
+    }
   }
 
-  // ── Capture & Analyse using Gemini ──
+  // Stop camera when navigating away
+  window.addEventListener('beforeunload', stopCamera);
+  document.querySelectorAll('a[href]').forEach(a => {
+    a.addEventListener('click', stopCamera);
+  });
+
+  // ════════════════════════════════════════════
+  //  CAPTURE & ANALYSE
+  // ════════════════════════════════════════════
   let pendingResult = null;
 
   async function captureAndAnalyze() {
     if (!cameraActive) { alert('Please start the camera first.'); return; }
+
     const key = getApiKey();
-    if (!key) { document.getElementById('apiBanner').classList.add('visible'); return; }
+    if (!key) {
+      document.getElementById('apiBanner').classList.add('visible');
+      return;
+    }
 
     const meal  = document.getElementById('mealSelect').value;
     const state = getState();
@@ -459,19 +555,25 @@
     pulse.classList.add('active');
     setTimeout(() => pulse.classList.remove('active'), 1200);
 
-    // Capture frame
+    // Capture frame from video
     const video  = document.getElementById('videoFeed');
     const canvas = document.createElement('canvas');
     canvas.width  = video.videoWidth  || 640;
     canvas.height = video.videoHeight || 480;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    // Gemini accepts base64 without the data:... prefix
-    const base64Image = canvas.toDataURL('image/jpeg', 0.82).split(',')[1];
+    const ctx = canvas.getContext('2d');
+
+    // Mirror correction for front camera
+    if (facingMode === 'user') {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0);
+
+    const base64Image = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
 
     showState('thinking');
 
     try {
-      // ── Gemini 1.5 Flash — free tier, very fast ──
       const GEMINI_URL =
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
 
@@ -482,12 +584,12 @@ Reply ONLY with this exact JSON object — no markdown, no code fences, no extra
 {"name":"<food name>","wastePercent":<integer 0-100>,"statusNote":"<short friendly note>"}
 
 Rules:
-- name: what food you see on the plate
+- name: what food you see on the plate (be specific)
 - wastePercent: how much food is LEFT uneaten. 0 = plate completely clean / fully eaten. 100 = nothing eaten at all.
-- statusNote: a short encouraging note about their eating
+- statusNote: a short encouraging note (max 15 words) about their eating
 
-If you cannot see food, return exactly:
-{"name":"No food detected","wastePercent":100,"statusNote":"Please point the camera at your food plate"}`;
+If you cannot see food clearly, return:
+{"name":"No food detected","wastePercent":100,"statusNote":"Please point the camera directly at your food plate"}`;
 
       const res = await fetch(GEMINI_URL, {
         method: 'POST',
@@ -499,7 +601,7 @@ If you cannot see food, return exactly:
               { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
             ]
           }],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 256 }
+          generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
         })
       });
 
@@ -510,7 +612,6 @@ If you cannot see food, return exactly:
       }
 
       const data = await res.json();
-      // Extract text from Gemini response structure
       const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
       let ai;
@@ -518,13 +619,12 @@ If you cannot see food, return exactly:
         const clean = raw.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
         ai = JSON.parse(clean);
       } catch {
-        // Try to pull JSON out of any surrounding text
         const match = raw.match(/\{[\s\S]*\}/);
         try { ai = match ? JSON.parse(match[0]) : null; } catch { ai = null; }
       }
 
       if (!ai || typeof ai.wastePercent === 'undefined') {
-        ai = { name: 'Could not parse result', wastePercent: 50, statusNote: 'Please try again' };
+        ai = { name: 'Could not parse result', wastePercent: 50, statusNote: 'Please try scanning again' };
       }
 
       const score = scoreFromWaste(ai.wastePercent);
@@ -543,15 +643,17 @@ If you cannot see food, return exactly:
       console.error('Gemini error:', err);
       pendingResult = null;
       showState('result');
-      document.getElementById('foodName').textContent  = '⚠️ Analysis failed';
+
+      document.getElementById('foodName').textContent = '⚠️ Analysis failed';
       const banner = document.getElementById('ptsBanner');
       banner.className = 'pts-earned-banner vlow';
       document.getElementById('ptsIcon').textContent   = '❌';
-      document.getElementById('ptsLabel').textContent  = 'Error: ' + (err.message || 'Unknown error');
+      document.getElementById('ptsLabel').textContent  = 'Error';
       document.getElementById('ptsValue').textContent  = '—';
       document.getElementById('rowMeal').textContent   = meal;
       document.getElementById('rowWaste').textContent  = '—';
-      document.getElementById('rowStatus').textContent = 'Check your API key or internet and try again.';
+      document.getElementById('rowStatus').textContent = err.message || 'Unknown error';
+      document.getElementById('statusNote').textContent = 'Check your API key or internet connection and try again.';
       document.getElementById('saveBtn').classList.remove('visible');
     }
   }
@@ -566,21 +668,27 @@ If you cannot see food, return exactly:
     document.getElementById('ptsValue').textContent = `+${r.points} pts`;
 
     document.getElementById('rowMeal').textContent   = r.meal;
-    document.getElementById('rowWaste').textContent  = r.wastePercent + '% waste left';
-    document.getElementById('rowStatus').textContent = r.statusNote;
+    document.getElementById('rowWaste').textContent  = r.wastePercent + '% food left on plate';
+    document.getElementById('rowStatus').textContent = r.label;
+    document.getElementById('statusNote').textContent = r.statusNote;
 
     const saveBtn = document.getElementById('saveBtn');
     const already = getState().meals[r.meal];
     saveBtn.textContent = already
       ? `💾 Update ${r.meal}  (+${r.points} pts)`
-      : `💾 Save to Home & Profile  (+${r.points} pts)`;
+      : `💾 Save — +${r.points} pts`;
     saveBtn.disabled = false;
     saveBtn.classList.add('visible');
 
     showState('result');
+
+    // Scroll result into view
+    setTimeout(() => {
+      document.getElementById('resultPanel').scrollTop = 0;
+    }, 50);
   }
 
-  // ── Save to localStorage → Home + Profile will read this ──
+  // ── Save scan to localStorage ──
   function saveScan() {
     if (!pendingResult) return;
     const state = getState();
@@ -588,25 +696,27 @@ If you cannot see food, return exactly:
 
     state.meals[meal] = {
       foodName:     pendingResult.foodName,
-      label:        pendingResult.label,        // "Eat clean" / "Eat a little clean" / etc.
+      label:        pendingResult.label,
       points:       pendingResult.points,
       tier:         pendingResult.tier,
       wastePercent: pendingResult.wastePercent,
       statusNote:   pendingResult.statusNote
     };
 
-    // Recalculate total from all 3 meals (safe against double-counting)
+    // Recalculate total from all 3 meals (no double-counting)
     let total = 0;
     for (const m of Object.values(state.meals)) { if (m) total += (m.points || 0); }
     state.totalPoints = total;
-
     saveState(state);
 
     const saveBtn = document.getElementById('saveBtn');
-    saveBtn.textContent = `✅ Saved! +${pendingResult.points} pts added for ${meal}`;
+    saveBtn.textContent = `✅ Saved! +${pendingResult.points} pts for ${meal}`;
     saveBtn.disabled    = true;
 
-    setTimeout(() => { window.location.href = 'index.html'; }, 1100);
+    setTimeout(() => {
+      stopCamera();
+      window.location.href = 'index.html';
+    }, 1000);
   }
 
   // ── UI state switcher ──
