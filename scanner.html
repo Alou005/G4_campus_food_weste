@@ -85,7 +85,7 @@
     }
     .meal-selector select option { background: #222; color: #fff; }
 
-    /* Controls row: Flip | Camera FAB | Analyse */
+    /* Controls row */
     .controls {
       display: flex; align-items: center; justify-content: center;
       gap: 16px; padding: 8px 20px 6px; flex-shrink: 0;
@@ -172,7 +172,6 @@
     .row-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); flex: 1; }
     .row-value { font-size: 13px; font-weight: 600; color: #fff; text-align: right; }
 
-    /* ── SAVE BUTTON (replaces old "Ready" badge) ── */
     .save-btn {
       margin: 0 18px 14px; background: #58b947; color: #fff; border: none;
       border-radius: 14px; padding: 14px; font-family: 'Poppins', sans-serif;
@@ -183,6 +182,27 @@
     .save-btn:hover:not(:disabled) { background: #4da83e; }
     .save-btn.visible { display: block; }
     .save-btn:disabled { background: #444; color: rgba(255,255,255,0.5); cursor: not-allowed; }
+
+    /* API key banner */
+    .api-banner {
+      background: rgba(255,100,0,0.18); border: 1px solid #ff6400;
+      border-radius: 12px; margin: 0 20px 6px; padding: 10px 14px;
+      font-size: 12px; color: rgba(255,255,255,0.85); display: none; flex-shrink: 0;
+    }
+    .api-banner.visible { display: block; }
+    .api-banner .banner-title { font-weight: 700; margin-bottom: 4px; }
+    .api-banner .banner-hint { font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+    .api-banner input {
+      width: 100%; margin-top: 4px; background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+      color: #fff; font-family: 'Poppins', sans-serif; font-size: 12px;
+      padding: 7px 10px; outline: none;
+    }
+    .api-banner button {
+      margin-top: 6px; width: 100%; background: #ff6400; border: none;
+      border-radius: 8px; color: #fff; font-family: 'Poppins', sans-serif;
+      font-size: 12px; font-weight: 700; padding: 7px; cursor: pointer;
+    }
 
     /* Bottom Nav */
     .bottom-nav {
@@ -205,25 +225,6 @@
       display: flex; align-items: center; justify-content: center;
       position: absolute; left: 50%; transform: translateX(-50%) translateY(-20px);
       box-shadow: 0 6px 20px rgba(255,154,0,0.5); cursor: pointer; border: 4px solid #1a1a1a;
-    }
-
-    /* API key banner */
-    .api-banner {
-      background: rgba(255,100,0,0.18); border: 1px solid #ff6400;
-      border-radius: 12px; margin: 0 20px 6px; padding: 10px 14px;
-      font-size: 12px; color: rgba(255,255,255,0.85); display: none; flex-shrink: 0;
-    }
-    .api-banner.visible { display: block; }
-    .api-banner input {
-      width: 100%; margin-top: 6px; background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
-      color: #fff; font-family: 'Poppins', sans-serif; font-size: 12px;
-      padding: 7px 10px; outline: none;
-    }
-    .api-banner button {
-      margin-top: 6px; width: 100%; background: #ff6400; border: none;
-      border-radius: 8px; color: #fff; font-family: 'Poppins', sans-serif;
-      font-size: 12px; font-weight: 700; padding: 7px; cursor: pointer;
     }
   </style>
 </head>
@@ -262,11 +263,12 @@
     </select>
   </div>
 
-  <!-- API key entry (shown if key missing) -->
+  <!-- Gemini API key banner -->
   <div class="api-banner" id="apiBanner">
-    ⚠️ Enter your Anthropic API key to enable food analysis:
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-    <button onclick="saveApiKey()">Save API Key</button>
+    <div class="banner-title">⚠️ Enter your Gemini API key</div>
+    <div class="banner-hint">Get a free key at aistudio.google.com → API Keys. It starts with AIza…</div>
+    <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
+    <button onclick="saveApiKey()">Save Key &amp; Start Scanning</button>
   </div>
 
   <!-- Controls -->
@@ -316,7 +318,6 @@
         <span class="row-value" id="rowStatus">—</span>
       </div>
     </div>
-    <!-- SAVE BUTTON — replaces old Ready badge -->
     <button class="save-btn" id="saveBtn" onclick="saveScan()">💾 Save to Home &amp; Profile</button>
   </div>
 
@@ -338,21 +339,28 @@
 
 <script>
   // ─────────────────────────────────────────────
-  //  CONFIG — paste your Anthropic API key here
-  //  OR enter it in the banner that appears on screen
+  //  GEMINI API — paste your key here (optional)
+  //  OR enter it in the banner shown on screen
+  //  Get a free key at: aistudio.google.com
   // ─────────────────────────────────────────────
-  const HARDCODED_KEY = ''; // e.g. 'sk-ant-api03-XXXX'
+  const HARDCODED_KEY = ''; // e.g. 'AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+  // Gemini model to use — gemini-2.5-flash is free tier
+  const GEMINI_MODEL = 'gemini-2.5-flash';
 
   // ── API key management ──
   function getApiKey() {
-    return HARDCODED_KEY || localStorage.getItem('cfwApiKey') || '';
+    return HARDCODED_KEY || localStorage.getItem('cfwGeminiKey') || '';
   }
   function saveApiKey() {
     const val = document.getElementById('apiKeyInput').value.trim();
-    if (!val.startsWith('sk-')) { alert('Invalid key — must start with sk-'); return; }
-    localStorage.setItem('cfwApiKey', val);
+    if (!val.startsWith('AIza')) {
+      alert('Invalid key — Gemini keys start with AIza…');
+      return;
+    }
+    localStorage.setItem('cfwGeminiKey', val);
     document.getElementById('apiBanner').classList.remove('visible');
-    alert('API key saved! You can now scan food.');
+    alert('Gemini API key saved! You can now scan food.');
   }
   function checkApiKey() {
     if (!getApiKey()) document.getElementById('apiBanner').classList.add('visible');
@@ -430,7 +438,7 @@
     if (cameraActive) { stopCamera(); await startCamera(); }
   }
 
-  // ── Capture & Analyse ──
+  // ── Capture & Analyse (Gemini API) ──
   let pendingResult = null;
 
   async function captureAndAnalyze() {
@@ -438,7 +446,6 @@
     const key = getApiKey();
     if (!key) { document.getElementById('apiBanner').classList.add('visible'); return; }
 
-    // Check meal not already scanned
     const meal  = document.getElementById('mealSelect').value;
     const state = getState();
     if (state.meals[meal]) {
@@ -450,7 +457,7 @@
     pulse.classList.add('active');
     setTimeout(() => pulse.classList.remove('active'), 1200);
 
-    // Grab frame from video
+    // Grab frame
     const video  = document.getElementById('videoFeed');
     const canvas = document.createElement('canvas');
     canvas.width  = video.videoWidth  || 640;
@@ -461,45 +468,56 @@
     showState('thinking');
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      // ── Gemini Vision API call ──
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
+
+      const res = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 500,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64Image } },
-              { type: 'text', text:
-`You are a food recognition AI for a university campus food tracking app.
+          contents: [{
+            parts: [
+              {
+                inline_data: {
+                  mime_type: 'image/jpeg',
+                  data: base64Image
+                }
+              },
+              {
+                text: `You are a food recognition AI for a university campus food tracking app.
 The student's meal is "${meal}". Look at the plate/tray in the image.
 
-Reply ONLY with this exact JSON (no markdown, no extra text):
+Reply ONLY with this exact JSON (no markdown, no extra text, no code fences):
 {"name":"<food name>","wastePercent":<0-100>,"statusNote":"<short friendly note>"}
 
-wastePercent = how much food is LEFT uneaten. 0 = plate totally clean. 100 = nothing eaten.
-If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"Point the camera at your food plate"}` }
+wastePercent = how much food is LEFT uneaten on the plate. 0 = plate totally clean. 100 = nothing eaten.
+If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"Point the camera at your food plate"}`
+              }
             ]
-          }]
+          }],
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 200
+          }
         })
       });
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || `HTTP ${res.status}`);
+        const msg = err.error?.message || `HTTP ${res.status}`;
+        // Friendly message for common errors
+        if (res.status === 400 && msg.includes('API_KEY')) throw new Error('Invalid Gemini API key. Check your key at aistudio.google.com');
+        if (res.status === 429) throw new Error('Rate limit hit. Wait a moment and try again.');
+        throw new Error(msg);
       }
 
       const data = await res.json();
-      const raw  = (data.content || []).map(b => b.text || '').join('').trim();
+
+      // Extract text from Gemini response structure
+      const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+
       let ai;
       try {
-        // Strip any accidental markdown fences
         const clean = raw.replace(/^```[a-z]*\n?/i,'').replace(/```$/,'').trim();
         ai = JSON.parse(clean);
       } catch {
@@ -519,8 +537,7 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
       displayResult(pendingResult);
 
     } catch(err) {
-      console.error('API error:', err);
-      // Still show a result panel so the user sees the error clearly
+      console.error('Gemini API error:', err);
       pendingResult = null;
       showState('result');
       document.getElementById('foodName').textContent   = '⚠️ Analysis failed';
@@ -541,14 +558,13 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     const banner = document.getElementById('ptsBanner');
     banner.className = 'pts-earned-banner ' + r.tier;
     document.getElementById('ptsIcon').textContent  = tierIcon[r.tier] || '⭐';
-    document.getElementById('ptsLabel').textContent = r.label;              // "Eat clean" etc.
+    document.getElementById('ptsLabel').textContent = r.label;
     document.getElementById('ptsValue').textContent = `+${r.points} pts`;
 
     document.getElementById('rowMeal').textContent   = r.meal;
     document.getElementById('rowWaste').textContent  = r.wastePercent + '% waste left';
     document.getElementById('rowStatus').textContent = r.statusNote;
 
-    // Save button
     const saveBtn = document.getElementById('saveBtn');
     const state   = getState();
     if (state.meals[r.meal]) {
@@ -559,34 +575,29 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
       saveBtn.disabled    = false;
     }
     saveBtn.classList.add('visible');
-
     showState('result');
   }
 
-  // ── SAVE to localStorage ──
+  // ── Save to localStorage ──
   function saveScan() {
     if (!pendingResult) return;
     const state = getState();
     const meal  = pendingResult.meal;
 
-    // Write the meal entry — all fields needed by Home + Profile
     state.meals[meal] = {
       foodName:     pendingResult.foodName,
-      label:        pendingResult.label,        // "Eat clean" / "Eat a little clean" / etc.
+      label:        pendingResult.label,
       points:       pendingResult.points,
       tier:         pendingResult.tier,
       wastePercent: pendingResult.wastePercent,
       statusNote:   pendingResult.statusNote
     };
 
-    // Recalculate total from all meals (avoids double-count on replace)
     let total = 0;
     for (const m of Object.values(state.meals)) { if (m) total += (m.points || 0); }
     state.totalPoints = total;
-
     saveState(state);
 
-    // Feedback then go home
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.textContent = `✓ Saved! +${pendingResult.points} pts added to ${meal}`;
     saveBtn.disabled    = true;
