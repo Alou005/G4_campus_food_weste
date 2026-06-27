@@ -72,7 +72,6 @@
       100% { transform: scale(2);   opacity: 0; }
     }
 
-    /* Meal selector */
     .meal-selector {
       display: flex; align-items: center; gap: 8px;
       padding: 8px 20px 4px; flex-shrink: 0;
@@ -85,7 +84,6 @@
     }
     .meal-selector select option { background: #222; color: #fff; }
 
-    /* Controls row */
     .controls {
       display: flex; align-items: center; justify-content: center;
       gap: 16px; padding: 8px 20px 6px; flex-shrink: 0;
@@ -110,7 +108,6 @@
     .scan-fab svg { width: 30px; height: 30px; fill: #fff; }
     .scan-fab.scanning { background: #cc3300; box-shadow: 0 6px 24px rgba(204,51,0,0.5); }
 
-    /* Result Panel */
     .result-panel {
       flex: 1; overflow-y: auto; margin: 0 20px 8px;
       border-radius: 20px; background: rgba(255,255,255,0.06);
@@ -191,7 +188,9 @@
     }
     .api-banner.visible { display: block; }
     .api-banner .banner-title { font-weight: 700; margin-bottom: 4px; }
-    .api-banner .banner-hint { font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+    .api-banner .banner-hint {
+      font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 6px; line-height: 1.5;
+    }
     .api-banner input {
       width: 100%; margin-top: 4px; background: rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
@@ -263,11 +262,14 @@
     </select>
   </div>
 
-  <!-- Gemini API key banner -->
+  <!-- API key banner (shown when no key is saved) -->
   <div class="api-banner" id="apiBanner">
-    <div class="banner-title">⚠️ Enter your Gemini API key</div>
-    <div class="banner-hint">Get a free key at aistudio.google.com → API Keys. It starts with AIza…</div>
-    <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
+    <div class="banner-title">⚠️ Enter your Gemini API key to enable scanning</div>
+    <div class="banner-hint">
+      Get a free key at <strong>aistudio.google.com → API Keys</strong>.<br>
+      New keys start with <strong>AQ.</strong> — old keys start with <strong>AIza</strong> — both are accepted.
+    </div>
+    <input type="password" id="apiKeyInput" placeholder="AQ... or AIza..." />
     <button onclick="saveApiKey()">Save Key &amp; Start Scanning</button>
   </div>
 
@@ -338,36 +340,55 @@
   </nav>
 
 <script>
-  // ─────────────────────────────────────────────
-  //  GEMINI API — paste your key here (optional)
-  //  OR enter it in the banner shown on screen
-  //  Get a free key at: aistudio.google.com
-  // ─────────────────────────────────────────────
-  const HARDCODED_KEY = ''; // e.g. 'AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  // ─────────────────────────────────────────────────────────────────
+  //  CONFIG
+  //  Paste your Gemini API key here (optional), or enter it in the
+  //  banner that appears on screen.
+  //
+  //  Get a free key at: https://aistudio.google.com/api-keys
+  //
+  //  CHANGE 1 — Supports both key formats:
+  //    • New Auth keys  → start with "AQ."   (issued from June 2026)
+  //    • Old Standard keys → start with "AIza" (still valid until Sep 2026)
+  // ─────────────────────────────────────────────────────────────────
+  const HARDCODED_KEY = ''; // e.g. 'AQ.Ab8...' or 'AIzaSy...'
 
-  // Gemini model to use — gemini-2.5-flash is free tier
+  // Gemini model — gemini-2.5-flash is on the free tier
   const GEMINI_MODEL = 'gemini-2.5-flash';
 
-  // ── API key management ──
+  // ── API key management ──────────────────────────────────────────
+
   function getApiKey() {
+    // Check hardcoded key first, then localStorage
     return HARDCODED_KEY || localStorage.getItem('cfwGeminiKey') || '';
   }
+
+  // CHANGE 2 — Replaced the old `startsWith('AIza')` check.
+  // New Auth keys start with "AQ." so the old check incorrectly rejected them.
+  // We now accept ANY key that is at least 20 characters long, which covers
+  // both the new AQ. Auth key format and the old AIza Standard key format.
+  function isValidGeminiKey(key) {
+    return typeof key === 'string' && key.trim().length >= 20;
+  }
+
   function saveApiKey() {
     const val = document.getElementById('apiKeyInput').value.trim();
-    if (!val.startsWith('AIza')) {
-      alert('Invalid key — Gemini keys start with AIza…');
+    if (!isValidGeminiKey(val)) {
+      alert('That doesn\'t look like a valid key. Copy it from aistudio.google.com/api-keys and try again.');
       return;
     }
     localStorage.setItem('cfwGeminiKey', val);
     document.getElementById('apiBanner').classList.remove('visible');
     alert('Gemini API key saved! You can now scan food.');
   }
+
   function checkApiKey() {
     if (!getApiKey()) document.getElementById('apiBanner').classList.add('visible');
   }
   checkApiKey();
 
-  // ── Scoring ──
+  // ── Scoring (unchanged) ─────────────────────────────────────────
+
   function scoreFromWaste(pct) {
     if (pct <= 10) return { label: 'Eat clean',               points: 100, tier: 'high'   };
     if (pct <= 40) return { label: 'Eat a little clean',      points: 60,  tier: 'medium' };
@@ -376,14 +397,16 @@
   }
   const tierIcon = { high: '🌟', medium: '⭐', low: '🍽️', vlow: '😔' };
 
-  // ── Auto-select meal by time ──
+  // ── Auto-select meal by time (unchanged) ────────────────────────
+
   (function autoMeal() {
     const h = new Date().getHours();
     document.getElementById('mealSelect').value =
       h < 11 ? 'Breakfast' : h < 15 ? 'Lunch' : 'Dinner';
   })();
 
-  // ── State helpers ──
+  // ── State helpers (unchanged) ───────────────────────────────────
+
   function getState() {
     const today = new Date().toDateString();
     let s = null;
@@ -398,7 +421,8 @@
   }
   function saveState(s) { localStorage.setItem('cfwState', JSON.stringify(s)); }
 
-  // ── Camera ──
+  // ── Camera (unchanged) ──────────────────────────────────────────
+
   let stream = null, facingMode = 'environment', cameraActive = false;
 
   async function toggleCamera() {
@@ -438,7 +462,8 @@
     if (cameraActive) { stopCamera(); await startCamera(); }
   }
 
-  // ── Capture & Analyse (Gemini API) ──
+  // ── Capture & Analyse ───────────────────────────────────────────
+
   let pendingResult = null;
 
   async function captureAndAnalyze() {
@@ -457,7 +482,7 @@
     pulse.classList.add('active');
     setTimeout(() => pulse.classList.remove('active'), 1200);
 
-    // Grab frame
+    // Grab frame from video
     const video  = document.getElementById('videoFeed');
     const canvas = document.createElement('canvas');
     canvas.width  = video.videoWidth  || 640;
@@ -468,12 +493,33 @@
     showState('thinking');
 
     try {
-      // ── Gemini Vision API call ──
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
+      // ── CHANGE 3 — Endpoint: removed ?key= from the URL ──────────
+      // The old code appended the key as a URL query parameter:
+      //   ?key=${key}
+      // This was the legacy pattern. The current Google recommendation
+      // is to pass the key in the x-goog-api-key request HEADER instead.
+      //
+      // Why this matters for AQ. keys:
+      // Auth keys (AQ.) are service-account-bound. Some gateway versions
+      // treat a key in the URL as one credential and a header as another,
+      // which triggers a "Multiple authentication credentials received"
+      // 400 error. Using the header exclusively avoids this entirely.
+      //
+      // The endpoint URL itself (v1beta/models/.../generateContent) is
+      // unchanged — it is still the correct REST path for vision requests.
+      const endpoint =
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
+      // ── CHANGE 4 — Authentication: x-goog-api-key header ─────────
+      // The key is now sent as a request header ("x-goog-api-key") rather
+      // than as a URL parameter. This is Google's current standard for
+      // both AIza Standard keys and AQ. Auth keys.
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': key          // ← key sent here, not in the URL
+        },
         body: JSON.stringify({
           contents: [{
             parts: [
@@ -505,20 +551,26 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         const msg = err.error?.message || `HTTP ${res.status}`;
-        // Friendly message for common errors
-        if (res.status === 400 && msg.includes('API_KEY')) throw new Error('Invalid Gemini API key. Check your key at aistudio.google.com');
-        if (res.status === 429) throw new Error('Rate limit hit. Wait a moment and try again.');
+        // Friendly messages for the most common error codes
+        if (res.status === 400 && msg.toLowerCase().includes('api key'))
+          throw new Error('Invalid API key. Check your key at aistudio.google.com/api-keys');
+        if (res.status === 400 && msg.toLowerCase().includes('multiple authentication'))
+          throw new Error('Authentication conflict. Clear saved key, reload, and re-enter it.');
+        if (res.status === 401 || res.status === 403)
+          throw new Error('API key rejected. Make sure it is restricted to the Gemini API in AI Studio.');
+        if (res.status === 429)
+          throw new Error('Rate limit hit. Wait a moment and try again.');
         throw new Error(msg);
       }
 
       const data = await res.json();
 
-      // Extract text from Gemini response structure
+      // Extract text from Gemini response (unchanged)
       const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
 
       let ai;
       try {
-        const clean = raw.replace(/^```[a-z]*\n?/i,'').replace(/```$/,'').trim();
+        const clean = raw.replace(/^```[a-z]*\n?/i, '').replace(/```$/, '').trim();
         ai = JSON.parse(clean);
       } catch {
         ai = { name: 'Could not read result', wastePercent: 50, statusNote: 'Try again' };
@@ -552,6 +604,8 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     }
   }
 
+  // ── Display result (unchanged) ──────────────────────────────────
+
   function displayResult(r) {
     document.getElementById('foodName').textContent = r.foodName;
 
@@ -578,7 +632,8 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     showState('result');
   }
 
-  // ── Save to localStorage ──
+  // ── Save to localStorage (unchanged) ───────────────────────────
+
   function saveScan() {
     if (!pendingResult) return;
     const state = getState();
@@ -605,7 +660,8 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     setTimeout(() => { window.location.href = 'index.html'; }, 1100);
   }
 
-  // ── UI state switcher ──
+  // ── UI state switcher (unchanged) ───────────────────────────────
+
   function showState(st) {
     document.getElementById('resultIdle').style.display    = st === 'idle'     ? 'flex' : 'none';
     document.getElementById('thinkingState').style.display = st === 'thinking' ? 'flex' : 'none';
