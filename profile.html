@@ -2,363 +2,312 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Campus Food West – Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: #e8e8e8;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 40px 20px;
+      background: #f5f7e8; display: flex;
+      flex-direction: column; height: 100dvh;
     }
-
-    /* ── Phone Frame (matches Home) ── */
-    .android-frame {
-      width: 393px;
-      height: 852px;
-      background: #f5f7e8;
-      border: 8px solid #161616;
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      box-shadow:
-        0 0 0 2px #444,
-        0 30px 80px rgba(0,0,0,.35);
-    }
-
-    /* ── Dynamic Island ── */
-    .dynamic-island {
-      width: 126px;
-      height: 36px;
-      background: #1a1a1a;
-      border-radius: 0 0 24px 24px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-    }
-
-    /* ── Background Pattern ── */
     .bg-pattern {
-      position: absolute;
-      inset: 0;
-      opacity: 0.05;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0; opacity: 0.05;
+      pointer-events: none; z-index: 0; overflow: hidden;
     }
     .bg-pattern img { width: 150%; height: 120%; }
-
-    /* ── Scrollable Content ── */
     .screen-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 20px 20px;
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      scrollbar-width: none;
+      flex: 1; overflow-y: auto;
+      padding-top: max(env(safe-area-inset-top), 14px);
+      padding-left: 20px; padding-right: 20px; padding-bottom: 20px;
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; scrollbar-width: none;
     }
     .screen-content::-webkit-scrollbar { display: none; }
 
-    /* ── Header Row ── */
+    /* Header */
     .header-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; padding-bottom: 14px;
     }
-
     .back-btn {
-      position: absolute;
-      left: 0;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      flex-shrink: 0;
+      position: absolute; left: 0; width: 36px; height: 36px;
+      border-radius: 50%; background: #000;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; flex-shrink: 0;
     }
-
     .page-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #1a1a0a;
-      letter-spacing: 0.4px;
+      font-family: 'Playfair Display', serif; font-size: 22px;
+      font-weight: 700; color: #1a1a0a; letter-spacing: 0.4px;
     }
 
-    /* ── Points Bar ── */
+    /* Points bar */
     .points-bar {
-      background: #58b947;
-      color: #fff;
-      border-radius: 14px 14px 0 0;
-      padding: 7px 14px;
-      font-size: 15px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      background: #58b947; color: #fff; border-radius: 14px 14px 0 0;
+      padding: 7px 14px; font-size: 15px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
     }
-    .points-bar .pts-right {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
+    .points-bar .pts-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    .pts-today-badge {
+      font-size: 11px; font-weight: 500;
+      background: rgba(0,0,0,0.18); border-radius: 20px; padding: 2px 8px;
+      color: rgba(255,255,255,0.85);
     }
 
-    /* ── Profile Card ── */
+    /* Profile card */
     .profile-card {
-      background: #000;
-      color: #fff;
-      border-radius: 0 0 20px 20px;
-      padding: 20px 22px 24px;
-      margin-bottom: 14px;
+      background: #000; color: #fff;
+      border-radius: 0 0 20px 20px; padding: 20px 22px 24px; margin-bottom: 14px;
     }
-
     .avatar {
-      width: 72px;
-      height: 72px;
-      border: 3px solid #fff;
-      border-radius: 50%;
-      margin: 0 auto 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-      background: #333;
+      width: 72px; height: 72px; border: 3px solid #fff; border-radius: 50%;
+      margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700; background: #333;
     }
-
-    .profile-name {
-      text-align: center;
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      letter-spacing: 0.3px;
-    }
-
+    .profile-name { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 16px; letter-spacing: 0.3px; }
     .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-size: 13px;
+      display: flex; justify-content: space-between; padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px;
     }
     .info-row:last-child { border-bottom: none; }
     .info-label { color: rgba(255,255,255,0.55); font-weight: 400; }
     .info-value { font-weight: 600; color: #fff; }
+    .info-value.pts { color: #ffcc00; font-size: 15px; }
 
-    /* ── Menu Card ── */
-    .menu-card {
-      background: #fff;
-      border-radius: 20px;
-      overflow: hidden;
+    /* Today summary inside profile card */
+    .today-summary {
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
+    .today-summary-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+      color: rgba(255,255,255,0.35); margin-bottom: 10px; font-weight: 600;
+    }
+    .meal-pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .meal-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.07); border-radius: 20px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .meal-pill.done { background: rgba(88,185,71,0.18); color: #7de86a; border-color: #58b947; }
+    .meal-pill .pill-pts { font-weight: 700; }
 
+    /* Menu card */
+    .menu-card { background: #fff; border-radius: 20px; overflow: hidden; }
     .menu-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 20px;
-      border-bottom: 1px solid #f0f0e8;
-      cursor: pointer;
-      transition: background 0.15s;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px; border-bottom: 1px solid #f0f0e8;
+      cursor: pointer; transition: background 0.15s;
     }
     .menu-item:last-child { border-bottom: none; }
     .menu-item:hover { background: #fafaf2; }
-
     .menu-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 15px; font-weight: 500; color: #1a1a1a;
     }
     .menu-left.logout { color: #cc0000; }
-
     .menu-arrow { font-size: 20px; color: #bbb; }
 
-    /* ── Bottom Navigation ── */
+    /* Bottom Nav */
     .bottom-nav {
-      height: 84px;
-      background: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 44px;
-      position: relative;
-      flex-shrink: 0;
-      z-index: 10;
+      background: #1a1a1a; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 44px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      height: calc(70px + env(safe-area-inset-bottom, 0px));
+      position: relative; flex-shrink: 0; z-index: 10;
     }
-
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      text-decoration: none;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 16px;
-      transition: background 0.2s;
-      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 4px; text-decoration: none;
+      color: #fff; padding: 8px 18px; border-radius: 16px; transition: background 0.2s; cursor: pointer;
     }
     .nav-item.active { background: #333; }
-
-    .nav-label {
-      font-size: 11px;
-      color: #ffffff;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 400;
-    }
-
-    /* Floating Camera Button */
+    .nav-label { font-size: 11px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 400; }
     .cam-fab {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #ff9a00;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%) translateY(-26px);
-      box-shadow: 0 6px 20px rgba(255,154,0,0.5);
-      cursor: pointer;
-      border: 4px solid #1a1a1a;
-      transition: transform 0.2s;
+      width: 64px; height: 64px; border-radius: 50%; background: #ff9a00;
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; left: 50%; transform: translateX(-50%) translateY(-26px);
+      box-shadow: 0 6px 20px rgba(255,154,0,0.5); cursor: pointer;
+      border: 4px solid #1a1a1a; transition: transform 0.2s;
     }
     .cam-fab:hover { transform: translateX(-50%) translateY(-28px) scale(1.05); }
-
     .nav-spacer { width: 64px; }
   </style>
 </head>
 <body>
 
-  <div class="android-frame">
+  <div class="bg-pattern">
+    <img src="Element/Background.png" alt="" />
+  </div>
 
-    <!-- Dynamic Island -->
-    <div class="dynamic-island"></div>
+  <div class="screen-content">
 
-    <!-- Background pattern -->
-    <div class="bg-pattern">
-      <img src="Element/Background.png" alt="" />
+    <!-- Header -->
+    <div class="header-row">
+      <a href="index.html" class="back-btn" aria-label="Back">
+        <img src="Element/Black back.png" alt="Back" width="20" height="14" />
+      </a>
+      <span class="page-title">Profile</span>
     </div>
 
-    <!-- Scrollable content -->
-    <div class="screen-content">
+    <!-- Points bar -->
+    <div class="points-bar">
+      <img src="Element/Point.png" width="28" height="20" alt="Points" />
+      <span id="totalPtsDisplay">0 pts</span>
+      <div class="pts-right">
+        <span class="pts-today-badge" id="todayPtsDisplay">+0 today</span>
+        <img src="Element/Third Box Icon.png" width="28" height="20" alt="" />
+      </div>
+    </div>
 
-      <!-- Header -->
-      <div class="header-row">
-        <a href="index.html" class="back-btn" aria-label="Back">
-          <img src="Element/Black back.png" alt="Back" width="20" height="14" />
-        </a>
-        <span class="page-title">Profile</span>
+    <!-- Profile card -->
+    <div class="profile-card">
+      <div class="avatar">A</div>
+      <div class="profile-name">Alou Yonglouher</div>
+      <div class="info-row">
+        <span class="info-label">Student ID</span>
+        <span class="info-value">225N000226</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Phone Number</span>
+        <span class="info-value">20 77 826 451</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Year of Study</span>
+        <span class="info-value">Year 2</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Student Status</span>
+        <span class="info-value">Studying</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Total Points</span>
+        <span class="info-value pts" id="totalPtsCard">0 pts</span>
       </div>
 
-      <!-- Points bar -->
-      <div class="points-bar">
-        <img src="Element/Point.png" width="28" height="20" alt="Points" />
-        <span>150 pts</span>
-        <div class="pts-right">
-          <img src="Element/Third Box Icon.png" width="28" height="20" alt="" />
+      <!-- Today's meal summary -->
+      <div class="today-summary">
+        <div class="today-summary-title">Today's Scans</div>
+        <div class="meal-pill-row" id="mealPillRow">
+          <div class="meal-pill" id="pillBreakfast">🌅 Breakfast</div>
+          <div class="meal-pill" id="pillLunch">☀️ Lunch</div>
+          <div class="meal-pill" id="pillDinner">🌙 Dinner</div>
         </div>
       </div>
+    </div>
 
-      <!-- Profile card -->
-      <div class="profile-card">
-        <div class="avatar">A</div>
-        <div class="profile-name">Alou Yonglouher</div>
-        <div class="info-row">
-          <span class="info-label">Student ID</span>
-          <span class="info-value">225N000226</span>
+    <!-- Menu -->
+    <div class="menu-card">
+      <div class="menu-item">
+        <div class="menu-left">
+          <img src="Element/Password.png" width="28" height="22" alt="" />
+          Change password
         </div>
-        <div class="info-row">
-          <span class="info-label">Phone Number</span>
-          <span class="info-value">20 77 826 451</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Year of Study</span>
-          <span class="info-value">Year 2</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Student Status</span>
-          <span class="info-value">Studying</span>
-        </div>
+        <span class="menu-arrow">›</span>
       </div>
-
-      <!-- Menu -->
-      <div class="menu-card">
-        <div class="menu-item">
-          <div class="menu-left">
-            <img src="Element/Password.png" width="28" height="22" alt="" />
-            Change password
-          </div>
-          <span class="menu-arrow">›</span>
+      <div class="menu-item">
+        <div class="menu-left">
+          <img src="Element/Help.png" width="28" height="22" alt="" />
+          Get help
         </div>
-        <div class="menu-item">
-          <div class="menu-left">
-            <img src="Element/Help.png" width="28" height="22" alt="" />
-            Get help
-          </div>
-          <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <div class="menu-left logout">
-            <img src="Element/Logout.png" width="28" height="22" alt="" />
-            Log out
-          </div>
-          <span class="menu-arrow" style="color:#cc0000;">›</span>
-        </div>
+        <span class="menu-arrow">›</span>
       </div>
-
-    </div><!-- end .screen-content -->
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav" aria-label="Main navigation">
-
-      <!-- Home -->
-      <a href="index.html" class="nav-item">
-        <img src="Element/Home.png" alt="Home Icon" width="30" height="20" />
-        <span class="nav-label">Home</span>
-      </a>
-
-      <!-- Spacer for FAB -->
-      <div class="nav-spacer"></div>
-
-      <!-- Profile (active on this page) -->
-      <a href="profile.html" class="nav-item active">
-        <img src="Element/Profile.png" alt="Profile Icon" width="38" height="25" />
-        <span class="nav-label">Profile</span>
-      </a>
-
-      <!-- Floating Camera Button -->
-      <div class="cam-fab" role="button" aria-label="Scan food" onclick="window.location.href='scanner.html'">
-        <img src="Element/Camera Icon.png" alt="Camera Icon" width="40" height="28" />
+      <div class="menu-item" onclick="resetPoints()">
+        <div class="menu-left" style="color:#888;">
+          <img src="Element/Help.png" width="28" height="22" alt="" />
+          Reset today's data (dev)
+        </div>
+        <span class="menu-arrow">›</span>
       </div>
+      <div class="menu-item">
+        <div class="menu-left logout">
+          <img src="Element/Logout.png" width="28" height="22" alt="" />
+          Log out
+        </div>
+        <span class="menu-arrow" style="color:#cc0000;">›</span>
+      </div>
+    </div>
 
-    </nav>
+  </div><!-- end .screen-content -->
 
-  </div><!-- end .android-frame -->
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-item">
+      <img src="Element/Home.png" alt="Home" width="30" height="20" />
+      <span class="nav-label">Home</span>
+    </a>
+    <div class="nav-spacer"></div>
+    <a href="profile.html" class="nav-item active">
+      <img src="Element/Profile.png" alt="Profile" width="38" height="25" />
+      <span class="nav-label">Profile</span>
+    </a>
+    <div class="cam-fab" role="button" aria-label="Scan food" onclick="window.location.href='scanner.html'">
+      <img src="Element/Camera Icon.png" alt="Camera" width="40" height="28" />
+    </div>
+  </nav>
 
+<script>
+  function getState() {
+    const today = new Date().toDateString();
+    const raw = localStorage.getItem('cfwState');
+    let state = raw ? JSON.parse(raw) : null;
+    if (!state || state.date !== today) {
+      state = {
+        date: today,
+        totalPoints: (state && state.totalPoints) ? state.totalPoints : 0,
+        meals: { Breakfast: null, Lunch: null, Dinner: null }
+      };
+      localStorage.setItem('cfwState', JSON.stringify(state));
+    }
+    return state;
+  }
+
+  function renderProfile() {
+    const state = getState();
+    document.getElementById('totalPtsDisplay').textContent = (state.totalPoints || 0) + ' pts';
+    document.getElementById('totalPtsCard').textContent = (state.totalPoints || 0) + ' pts';
+
+    // Today's points
+    let todayPts = 0;
+    const meals = state.meals;
+    for (const m of Object.values(meals)) { if (m) todayPts += m.points; }
+    document.getElementById('todayPtsDisplay').textContent = `+${todayPts} today`;
+
+    // Meal pills
+    const pillMap = {
+      Breakfast: { id: 'pillBreakfast', icon: '🌅' },
+      Lunch:     { id: 'pillLunch',     icon: '☀️' },
+      Dinner:    { id: 'pillDinner',    icon: '🌙' }
+    };
+    for (const [meal, cfg] of Object.entries(pillMap)) {
+      const el = document.getElementById(cfg.id);
+      const data = meals[meal];
+      if (data) {
+        el.className = 'meal-pill done';
+        el.textContent = `${cfg.icon} ${meal} · +${data.points} pts`;
+      } else {
+        el.className = 'meal-pill';
+        el.textContent = `${cfg.icon} ${meal}`;
+      }
+    }
+  }
+
+  function resetPoints() {
+    if (!confirm('Reset today\'s scans and points for dev testing?')) return;
+    const state = getState();
+    // Subtract today's earned points from total
+    let todayPts = 0;
+    for (const m of Object.values(state.meals)) { if (m) todayPts += m.points; }
+    state.totalPoints = Math.max(0, (state.totalPoints || 0) - todayPts);
+    state.meals = { Breakfast: null, Lunch: null, Dinner: null };
+    localStorage.setItem('cfwState', JSON.stringify(state));
+    renderProfile();
+  }
+
+  renderProfile();
+</script>
 </body>
 </html>

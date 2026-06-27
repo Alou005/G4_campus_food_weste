@@ -2,310 +2,150 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Campus Food West – Food Scanner</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html, body { height: 100%; width: 100%; overflow: hidden; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: #e8e8e8;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 40px 20px;
-    }
-
-    /* ── Phone Frame ── */
-    .android-frame {
-      width: 393px;
-      height: 852px;
       background: #0d0d0d;
-      border: 8px solid #161616;
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 0 2px #444, 0 30px 80px rgba(0,0,0,.35);
+      display: flex; flex-direction: column; height: 100dvh;
     }
 
-    /* ── Dynamic Island ── */
-    .dynamic-island {
-      width: 126px;
-      height: 36px;
-      background: #1a1a1a;
-      border-radius: 0 0 24px 24px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-    }
-
-    /* ── Header ── */
+    /* Header */
     .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       position: relative;
-      padding: 14px 20px 10px;
+      padding-top: max(env(safe-area-inset-top), 14px);
+      padding-left: 20px; padding-right: 20px; padding-bottom: 10px;
       flex-shrink: 0;
     }
-
     .back-btn {
-      position: absolute;
-      left: 20px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+      position: absolute; left: 20px; bottom: 10px;
+      width: 36px; height: 36px; border-radius: 50%;
       background: rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
     }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; }
 
-    .page-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    /* ── Camera Viewfinder ── */
+    /* Viewfinder */
     .viewfinder-wrap {
-      position: relative;
-      margin: 0 20px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: #000;
-      flex-shrink: 0;
-      height: 300px;
+      position: relative; margin: 0 20px; border-radius: 20px;
+      overflow: hidden; background: #000; flex-shrink: 0; height: 280px;
     }
-
-    #videoFeed {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* Scanning overlay corners */
-    .scan-corners {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
+    #videoFeed { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .scan-corners { position: absolute; inset: 0; pointer-events: none; }
     .corner {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-color: #ff9a00;
-      border-style: solid;
+      position: absolute; width: 28px; height: 28px;
+      border-color: #ff9a00; border-style: solid;
     }
     .corner.tl { top: 16px; left: 16px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
     .corner.tr { top: 16px; right: 16px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
     .corner.bl { bottom: 16px; left: 16px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
     .corner.br { bottom: 16px; right: 16px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
-
-    /* Scan line animation */
     .scan-line {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      height: 2px;
+      position: absolute; left: 16px; right: 16px; height: 2px;
       background: linear-gradient(90deg, transparent, #ff9a00, transparent);
-      animation: scanMove 2s ease-in-out infinite;
-      opacity: 0;
+      animation: scanMove 2s ease-in-out infinite; opacity: 0;
     }
     .scan-line.active { opacity: 1; }
-
     @keyframes scanMove {
       0%   { top: 16px; }
       50%  { top: calc(100% - 16px); }
       100% { top: 16px; }
     }
-
-    /* Camera placeholder when off */
     .cam-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: #111;
-      color: rgba(255,255,255,0.4);
-      font-size: 13px;
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      background: #111; color: rgba(255,255,255,0.4);
+      font-size: 13px; text-align: center; padding: 20px;
     }
     .cam-placeholder svg { width: 48px; height: 48px; opacity: 0.3; }
-
-    /* Scanning pulse ring */
     .pulse-ring {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      opacity: 0;
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center; pointer-events: none; opacity: 0;
     }
     .pulse-ring.active { opacity: 1; }
     .pulse-ring::before {
-      content: '';
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid #ff9a00;
-      animation: pulse 1.2s ease-out infinite;
+      content: ''; width: 80px; height: 80px; border-radius: 50%;
+      border: 3px solid #ff9a00; animation: pulse 1.2s ease-out infinite;
     }
     @keyframes pulse {
       0%   { transform: scale(0.8); opacity: 1; }
       100% { transform: scale(2);   opacity: 0; }
     }
 
-    /* ── Controls ── */
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 16px 20px 10px;
+    /* Meal selector notice */
+    .meal-selector {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px 2px;
       flex-shrink: 0;
     }
-
-    .ctrl-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      background: rgba(255,255,255,0.07);
-      border: none;
-      border-radius: 16px;
-      padding: 12px 18px;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      font-size: 11px;
+    .meal-selector label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; }
+    .meal-selector select {
+      flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; color: #fff; font-family: 'Poppins', sans-serif;
+      font-size: 13px; font-weight: 600; padding: 7px 12px; appearance: none;
       cursor: pointer;
-      transition: background 0.2s;
-      flex: 1;
-      max-width: 90px;
+    }
+    .meal-selector select option { background: #222; color: #fff; }
+    .meal-badge {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 20px; background: #ff9a00; color: #fff;
+      white-space: nowrap;
+    }
+    .meal-badge.done { background: #58b947; }
+
+    /* Controls */
+    .controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; padding: 10px 20px 8px; flex-shrink: 0;
+    }
+    .ctrl-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.07); border: none; border-radius: 16px;
+      padding: 12px 18px; color: #fff; font-family: 'Poppins', sans-serif;
+      font-size: 11px; cursor: pointer; transition: background 0.2s;
+      flex: 1; max-width: 90px;
     }
     .ctrl-btn:hover { background: rgba(255,255,255,0.13); }
-    .ctrl-btn svg { width: 22px; height: 22px; fill: #ffffff; }
-
+    .ctrl-btn svg { width: 22px; height: 22px; fill: #fff; }
+    .ctrl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .scan-fab {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: #ff9a00;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(255,154,0,0.5);
-      transition: transform 0.2s, box-shadow 0.2s;
-      flex-shrink: 0;
+      width: 72px; height: 72px; border-radius: 50%; background: #ff9a00;
+      border: none; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 6px 24px rgba(255,154,0,0.5);
+      transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
     }
-    .scan-fab:hover { transform: scale(1.06); box-shadow: 0 8px 28px rgba(255,154,0,0.65); }
+    .scan-fab:hover { transform: scale(1.06); }
     .scan-fab svg { width: 32px; height: 32px; fill: #fff; }
     .scan-fab.scanning { background: #cc3300; box-shadow: 0 6px 24px rgba(204,51,0,0.5); }
 
-    /* ── Result Panel ── */
+    /* Result Panel */
     .result-panel {
-      flex: 1;
-      overflow-y: auto;
-      margin: 0 20px 12px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.06);
+      flex: 1; overflow-y: auto; margin: 0 20px 10px;
+      border-radius: 20px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
-      scrollbar-width: none;
-      display: flex;
-      flex-direction: column;
+      scrollbar-width: none; display: flex; flex-direction: column;
     }
     .result-panel::-webkit-scrollbar { display: none; }
-
     .result-idle {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.25);
-      font-size: 13px;
-      text-align: center;
-      padding: 20px;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      color: rgba(255,255,255,0.25); font-size: 13px; text-align: center; padding: 20px;
     }
     .result-idle svg { width: 36px; height: 36px; opacity: 0.2; }
-
-    .result-content {
-      display: none;
-      padding: 4px 0;
-      flex-direction: column;
-    }
-    .result-content.visible { display: flex; }
-
-    /* Food name header inside panel */
-    .result-food-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      padding: 12px 18px 8px;
-      letter-spacing: 0.3px;
-    }
-
-    /* Each result row — matches screenshot style */
-    .result-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-bottom: 1.5px solid #b8860b;
-    }
-    .result-row:last-child { border-bottom: none; }
-
-    .row-label {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      flex: 1;
-    }
-
-    .row-value {
-      font-size: 13px;
-      font-weight: 500;
-      color: #fff;
-      text-align: right;
-    }
-
-    /* Thinking state */
     .thinking {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 30px;
-      flex: 1;
-      color: rgba(255,255,255,0.5);
-      font-size: 13px;
+      display: none; flex-direction: column; align-items: center;
+      justify-content: center; gap: 12px; padding: 30px; flex: 1;
+      color: rgba(255,255,255,0.5); font-size: 13px;
     }
     .thinking.visible { display: flex; }
-
     .dots span {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ff9a00;
-      margin: 0 3px;
-      animation: dotBounce 1.2s ease-in-out infinite;
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #ff9a00; margin: 0 3px; animation: dotBounce 1.2s ease-in-out infinite;
     }
     .dots span:nth-child(2) { animation-delay: 0.2s; }
     .dots span:nth-child(3) { animation-delay: 0.4s; }
@@ -314,62 +154,77 @@
       40%            { transform: translateY(-8px); opacity: 1; }
     }
 
-    /* ── Bottom Navigation ── */
-    .bottom-nav {
-      height: 72px;
-      background: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 44px;
-      position: relative;
-      flex-shrink: 0;
-      z-index: 10;
+    .result-content { display: none; padding: 4px 0; flex-direction: column; }
+    .result-content.visible { display: flex; }
+
+    .result-food-name {
+      font-size: 15px; font-weight: 700; color: #fff;
+      padding: 12px 18px 4px; letter-spacing: 0.3px;
     }
 
+    /* Points earned banner */
+    .pts-earned-banner {
+      margin: 4px 18px 8px;
+      border-radius: 12px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pts-earned-banner.high   { background: rgba(88,185,71,0.18); border: 1px solid #58b947; }
+    .pts-earned-banner.medium { background: rgba(255,154,0,0.18); border: 1px solid #ff9a00; }
+    .pts-earned-banner.low    { background: rgba(255,80,0,0.18);  border: 1px solid #ff5000; }
+    .pts-earned-banner.vlow   { background: rgba(200,0,0,0.18);   border: 1px solid #c00; }
+    .pts-earned-icon { font-size: 22px; }
+    .pts-earned-text { flex: 1; }
+    .pts-earned-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .pts-earned-value { font-size: 18px; font-weight: 700; color: #fff; }
+
+    .result-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; border-bottom: 1.5px solid rgba(255,255,255,0.07);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .row-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); flex: 1; }
+    .row-value { font-size: 13px; font-weight: 600; color: #fff; text-align: right; }
+
+    /* Save button */
+    .save-btn {
+      margin: 0 18px 14px;
+      background: #58b947; color: #fff; border: none;
+      border-radius: 14px; padding: 13px; font-family: 'Poppins', sans-serif;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      display: none; width: calc(100% - 36px); transition: background 0.2s;
+    }
+    .save-btn:hover { background: #4da83e; }
+    .save-btn.visible { display: block; }
+    .save-btn:disabled { background: #555; cursor: not-allowed; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      background: #1a1a1a; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 44px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      height: calc(70px + env(safe-area-inset-bottom, 0px));
+      position: relative; flex-shrink: 0; z-index: 10;
+    }
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      text-decoration: none;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 16px;
-      transition: background 0.2s;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 4px; text-decoration: none;
+      color: #fff; padding: 8px 16px; border-radius: 16px; transition: background 0.2s;
     }
     .nav-item.active { background: #333; }
     .nav-label { font-size: 11px; color: #fff; font-family: 'Poppins', sans-serif; }
     .nav-spacer { width: 64px; }
-
     .cam-fab-nav {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #ff9a00;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      box-shadow: 0 6px 20px rgba(255,154,0,0.5);
-      cursor: pointer;
-      border: 4px solid #1a1a1a;
+      width: 56px; height: 56px; border-radius: 50%; background: #ff9a00;
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; left: 50%; transform: translateX(-50%) translateY(-20px);
+      box-shadow: 0 6px 20px rgba(255,154,0,0.5); cursor: pointer; border: 4px solid #1a1a1a;
     }
   </style>
 </head>
 <body>
 
-<div class="android-frame">
-
-  <!-- Dynamic Island -->
-  <div class="dynamic-island"></div>
-
-  <!-- Header -->
   <div class="header">
-    <a href="Home.html" class="back-btn">
+    <a href="index.html" class="back-btn">
       <svg viewBox="0 0 24 24" fill="#fff" width="18" height="18">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
       </svg>
@@ -377,29 +232,31 @@
     <span class="page-title">Food Scanner</span>
   </div>
 
-  <!-- Live Camera Viewfinder -->
   <div class="viewfinder-wrap">
     <video id="videoFeed" autoplay playsinline muted></video>
-
-    <!-- Placeholder shown before camera starts -->
     <div class="cam-placeholder" id="camPlaceholder">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 15a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>
       Tap the button below to start scanning
     </div>
-
-    <!-- Corner guides -->
     <div class="scan-corners">
       <div class="corner tl"></div>
       <div class="corner tr"></div>
       <div class="corner bl"></div>
       <div class="corner br"></div>
     </div>
-
-    <!-- Animated scan line -->
     <div class="scan-line" id="scanLine"></div>
-
-    <!-- Pulse ring on capture -->
     <div class="pulse-ring" id="pulseRing"></div>
+  </div>
+
+  <!-- Meal selector -->
+  <div class="meal-selector">
+    <label for="mealSelect">Meal:</label>
+    <select id="mealSelect">
+      <option value="Breakfast">🌅 Breakfast</option>
+      <option value="Lunch">☀️ Lunch</option>
+      <option value="Dinner">🌙 Dinner</option>
+    </select>
+    <span class="meal-badge" id="mealBadge">Ready</span>
   </div>
 
   <!-- Controls -->
@@ -408,12 +265,9 @@
       <svg viewBox="0 0 24 24"><path d="M7.11 8.53 5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42A5.2 5.2 0 0 1 6.09 13zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c2.84.48 5 2.94 5 5.91s-2.16 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93s-3.05-7.44-7-7.93z"/></svg>
       Flip
     </button>
-
     <button class="scan-fab" id="scanBtn" onclick="toggleCamera()">
-      <!-- Camera icon -->
       <svg viewBox="0 0 24 24"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>
     </button>
-
     <button class="ctrl-btn" id="captureBtn" onclick="captureAndAnalyze()" disabled>
       <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zM20 4h-1V2h-2v2H7V2H5v2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 18H4V10h16v12z"/></svg>
       Analyse
@@ -422,43 +276,42 @@
 
   <!-- Result Panel -->
   <div class="result-panel">
-
-    <!-- Idle state -->
     <div class="result-idle" id="resultIdle">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-18a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm-1 9h2v6h-2v-6z"/></svg>
-      Point the camera at any food item, then tap <strong style="color:#ff9a00">&nbsp;Analyse</strong>
+      Select a meal above, start the camera, then tap <strong style="color:#ff9a00">&nbsp;Analyse</strong>
     </div>
-
-    <!-- Thinking / loading -->
     <div class="thinking" id="thinkingState">
-      <div class="dots">
-        <span></span><span></span><span></span>
-      </div>
+      <div class="dots"><span></span><span></span><span></span></div>
       Identifying food item…
     </div>
-
-    <!-- Result content -->
     <div class="result-content" id="resultContent">
       <div class="result-food-name" id="foodName">—</div>
-      <div class="result-row">
-        <span class="row-label">Your eating time</span>
-        <span class="row-value" id="rowMealTime">—</span>
+      <div class="pts-earned-banner" id="ptsBanner">
+        <div class="pts-earned-icon" id="ptsIcon">⭐</div>
+        <div class="pts-earned-text">
+          <div class="pts-earned-label" id="ptsLabel">Points earned</div>
+          <div class="pts-earned-value" id="ptsValue">—</div>
+        </div>
       </div>
       <div class="result-row">
-        <span class="row-label">Your eating status</span>
+        <span class="row-label">Meal slot</span>
+        <span class="row-value" id="rowMeal">—</span>
+      </div>
+      <div class="result-row">
+        <span class="row-label">Waste level</span>
+        <span class="row-value" id="rowWaste">—</span>
+      </div>
+      <div class="result-row">
+        <span class="row-label">Eating status</span>
         <span class="row-value" id="rowStatus">—</span>
       </div>
-      <div class="result-row">
-        <span class="row-label" id="rowScoreLabel">Your score</span>
-        <span class="row-value" id="rowScore">—</span>
-      </div>
     </div>
-
+    <button class="save-btn" id="saveBtn" onclick="saveScan()">✓ Save & Add to Points</button>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Nav -->
   <nav class="bottom-nav">
-    <a href="Home.html" class="nav-item">
+    <a href="index.html" class="nav-item">
       <img src="Element/Home.png" alt="Home" width="28" height="20" />
       <span class="nav-label">Home</span>
     </a>
@@ -472,54 +325,80 @@
     </div>
   </nav>
 
-</div>
-
 <script>
   let stream = null;
-  let facingMode = 'environment'; // rear camera by default
+  let facingMode = 'environment';
   let cameraActive = false;
+  let pendingResult = null; // holds the result waiting to be saved
 
-  // ── Start / Stop Camera ──
-  async function toggleCamera() {
-    if (cameraActive) {
-      stopCamera();
-    } else {
-      await startCamera();
-    }
+  // ── Scoring table ──
+  // wastePercent (0–100) → { label, points, tier }
+  function scoreFromWaste(pct) {
+    if (pct <= 10)  return { label: 'Eat clean',                points: 100, tier: 'high' };
+    if (pct <= 40)  return { label: 'Eat a little clean',       points: 60,  tier: 'medium' };
+    if (pct <= 80)  return { label: 'Eat left normal',          points: 30,  tier: 'low' };
+    return              { label: 'Too much food waste left',  points: 5,   tier: 'vlow' };
   }
 
+  const tierIcon = { high: '🌟', medium: '⭐', low: '🍽️', vlow: '😔' };
+
+  // ── State ──
+  function getState() {
+    const today = new Date().toDateString();
+    const raw = localStorage.getItem('cfwState');
+    let state = raw ? JSON.parse(raw) : null;
+    if (!state || state.date !== today) {
+      state = {
+        date: today,
+        totalPoints: (state && state.totalPoints) ? state.totalPoints : 0,
+        meals: { Breakfast: null, Lunch: null, Dinner: null }
+      };
+      localStorage.setItem('cfwState', JSON.stringify(state));
+    }
+    return state;
+  }
+  function saveState(state) { localStorage.setItem('cfwState', JSON.stringify(state)); }
+
+  // ── Meal badge update ──
+  function updateMealBadge() {
+    const meal = document.getElementById('mealSelect').value;
+    const state = getState();
+    const badge = document.getElementById('mealBadge');
+    if (state.meals[meal]) {
+      badge.textContent = '✓ Done';
+      badge.className = 'meal-badge done';
+    } else {
+      badge.textContent = 'Ready';
+      badge.className = 'meal-badge';
+    }
+  }
+  document.getElementById('mealSelect').addEventListener('change', updateMealBadge);
+  updateMealBadge();
+
+  // ── Camera ──
+  async function toggleCamera() {
+    if (cameraActive) { stopCamera(); } else { await startCamera(); }
+  }
   async function startCamera() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false
+        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false
       });
       const video = document.getElementById('videoFeed');
       video.srcObject = stream;
       await video.play();
-
       cameraActive = true;
       document.getElementById('camPlaceholder').style.display = 'none';
       document.getElementById('scanLine').classList.add('active');
       document.getElementById('scanBtn').classList.add('scanning');
       document.getElementById('captureBtn').disabled = false;
-
-      // Change scan button to stop icon
-      document.getElementById('scanBtn').innerHTML = `
-        <svg viewBox="0 0 24 24" fill="#fff" width="32" height="32">
-          <rect x="6" y="6" width="12" height="12" rx="2"/>
-        </svg>`;
-    } catch (err) {
+      document.getElementById('scanBtn').innerHTML = `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
+    } catch {
       alert('Camera access denied. Please allow camera permission and try again.');
-      console.error(err);
     }
   }
-
   function stopCamera() {
-    if (stream) {
-      stream.getTracks().forEach(t => t.stop());
-      stream = null;
-    }
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     const video = document.getElementById('videoFeed');
     video.srcObject = null;
     cameraActive = false;
@@ -527,41 +406,30 @@
     document.getElementById('scanLine').classList.remove('active');
     document.getElementById('scanBtn').classList.remove('scanning');
     document.getElementById('captureBtn').disabled = true;
-    document.getElementById('scanBtn').innerHTML = `
-      <svg viewBox="0 0 24 24" fill="#fff" width="32" height="32">
-        <path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/>
-      </svg>`;
+    document.getElementById('scanBtn').innerHTML = `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
   }
-
-  // ── Flip Camera ──
   async function flipCamera() {
     facingMode = facingMode === 'environment' ? 'user' : 'environment';
-    if (cameraActive) {
-      stopCamera();
-      await startCamera();
-    }
+    if (cameraActive) { stopCamera(); await startCamera(); }
   }
 
-  // ── Capture Frame & Send to Claude AI ──
+  // ── Capture & Analyse ──
   async function captureAndAnalyze() {
     if (!cameraActive) return;
-
-    // Flash pulse ring
     const pulse = document.getElementById('pulseRing');
     pulse.classList.add('active');
     setTimeout(() => pulse.classList.remove('active'), 1200);
 
-    // Capture frame from video
     const video = document.getElementById('videoFeed');
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
+    canvas.getContext('2d').drawImage(video, 0, 0);
     const base64Image = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
 
-    // Show thinking state
     showState('thinking');
+
+    const meal = document.getElementById('mealSelect').value;
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -573,25 +441,20 @@
           messages: [{
             role: 'user',
             content: [
-              {
-                type: 'image',
-                source: { type: 'base64', media_type: 'image/jpeg', data: base64Image }
-              },
-              {
-                type: 'text',
-                text: `You are a food recognition AI for a university campus food app. Analyze this image and identify the food item shown.
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64Image } },
+              { type: 'text', text: `You are a food recognition AI for a university campus food tracking app.
 
-Respond ONLY with a valid JSON object in this exact format (no markdown, no backticks):
+The student says this is their "${meal}". Analyze the image.
+
+Respond ONLY with a valid JSON object (no markdown, no backticks, no explanation):
 {
-  "name": "Food name here",
-  "mealTime": "Breakfast or Lunch or Dinner depending on what type of food this is",
-  "status": "0-10% or 10-30% or 30-60% or 60-80% or 80-100% based on how healthy/campus-appropriate the food is",
-  "score": "a number out of 100 pts based on nutritional value and campus meal appropriateness e.g. 85 pts"
+  "name": "Name of the food item shown",
+  "wastePercent": <integer 0-100 estimating how much food waste is left on the plate/tray. 0 = plate is completely clean / food fully eaten. 100 = almost nothing eaten>,
+  "statusNote": "A short friendly note about the eating status"
 }
 
 If you cannot identify food in the image, return:
-{"name": "No food detected", "mealTime": "—", "status": "—", "score": "—"}`
-              }
+{"name": "No food detected", "wastePercent": 100, "statusNote": "Please point the camera at a food item"}` }
             ]
           }]
         })
@@ -599,48 +462,91 @@ If you cannot identify food in the image, return:
 
       const data = await response.json();
       const raw = data.content.map(b => b.text || '').join('');
+      let ai;
+      try { ai = JSON.parse(raw.replace(/```json|```/g, '').trim()); }
+      catch { ai = { name: 'Analysis error', wastePercent: 100, statusNote: 'Could not read result' }; }
 
-      let result;
-      try {
-        const clean = raw.replace(/```json|```/g, '').trim();
-        result = JSON.parse(clean);
-      } catch {
-        result = {
-          name: 'Analysis error',
-          mealTime: '—',
-          status: '—',
-          score: '—'
-        };
-      }
-
-      displayResult(result);
-
-    } catch (err) {
-      console.error(err);
-      displayResult({
-        name: 'Connection error',
-        mealTime: '—',
-        status: '—',
-        score: '—'
-      });
+      const score = scoreFromWaste(ai.wastePercent);
+      pendingResult = {
+        meal,
+        foodName: ai.name,
+        wastePercent: ai.wastePercent,
+        statusNote: ai.statusNote,
+        label: score.label,
+        points: score.points,
+        tier: score.tier
+      };
+      displayResult(pendingResult);
+    } catch {
+      pendingResult = null;
+      displayResult({ meal, foodName: 'Connection error', wastePercent: 100, statusNote: '—', label: '—', points: 0, tier: 'vlow' });
     }
   }
 
   function displayResult(r) {
-    document.getElementById('foodName').textContent = r.name;
-    document.getElementById('rowMealTime').textContent = r.mealTime || '—';
-    document.getElementById('rowStatus').textContent = r.status || '—';
-    document.getElementById('rowScoreLabel').textContent = 'Your score for ' + (r.mealTime ? r.mealTime.toLowerCase() : 'this meal');
-    document.getElementById('rowScore').textContent = r.score || '—';
+    document.getElementById('foodName').textContent = r.foodName;
+
+    // Points banner
+    const banner = document.getElementById('ptsBanner');
+    banner.className = 'pts-earned-banner ' + (r.tier || 'vlow');
+    document.getElementById('ptsIcon').textContent = tierIcon[r.tier] || '⭐';
+    document.getElementById('ptsLabel').textContent = r.label;
+    document.getElementById('ptsValue').textContent = r.points > 0 ? `+${r.points} pts` : '—';
+
+    document.getElementById('rowMeal').textContent = r.meal;
+    document.getElementById('rowWaste').textContent = r.wastePercent + '% waste left';
+    document.getElementById('rowStatus').textContent = r.statusNote;
+
+    // Show save button only if this meal hasn't been saved yet
+    const state = getState();
+    const saveBtn = document.getElementById('saveBtn');
+    if (state.meals[r.meal]) {
+      saveBtn.textContent = '✓ Already saved for ' + r.meal;
+      saveBtn.disabled = true;
+      saveBtn.classList.add('visible');
+    } else if (r.points > 0) {
+      saveBtn.textContent = `✓ Save & Add +${r.points} pts to ${r.meal}`;
+      saveBtn.disabled = false;
+      saveBtn.classList.add('visible');
+    } else {
+      saveBtn.classList.remove('visible');
+    }
+
     showState('result');
   }
 
+  function saveScan() {
+    if (!pendingResult) return;
+    const state = getState();
+    const meal = pendingResult.meal;
+    if (state.meals[meal]) {
+      alert(`${meal} has already been recorded today.`);
+      return;
+    }
+    state.meals[meal] = {
+      foodName: pendingResult.foodName,
+      label: pendingResult.label,
+      points: pendingResult.points,
+      tier: pendingResult.tier
+    };
+    state.totalPoints = (state.totalPoints || 0) + pendingResult.points;
+    saveState(state);
+
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.textContent = `✓ Saved! +${pendingResult.points} pts added`;
+    saveBtn.disabled = true;
+    updateMealBadge();
+
+    // Brief toast then redirect home
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+  }
+
   function showState(state) {
-    document.getElementById('resultIdle').style.display    = state === 'idle'     ? 'flex' : 'none';
-    document.getElementById('thinkingState').style.display = state === 'thinking'  ? 'flex' : 'none';
+    document.getElementById('resultIdle').style.display    = state === 'idle'    ? 'flex' : 'none';
+    document.getElementById('thinkingState').style.display = state === 'thinking' ? 'flex' : 'none';
     document.getElementById('resultContent').classList.toggle('visible', state === 'result');
+    if (state !== 'result') document.getElementById('saveBtn').classList.remove('visible');
   }
 </script>
-
 </body>
 </html>
