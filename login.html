@@ -15,7 +15,6 @@
       min-height: 100dvh; overflow-y: auto;
     }
 
-    /* ── Background pattern ── */
     .bg {
       position: fixed; inset: 0; z-index: 0;
       background: linear-gradient(160deg, #1a0a00 0%, #0d0600 40%, #00001a 100%);
@@ -29,13 +28,12 @@
 
     .page-wrap {
       position: relative; z-index: 2;
-      display: flex; flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
       padding: max(env(safe-area-inset-top), 40px) 24px 40px;
       flex: 1;
     }
 
-    /* ── Logo ── */
+    /* Logo */
     .logo-block { text-align: center; margin-bottom: 28px; }
     .logo-img { width: 72px; height: 56px; object-fit: contain; margin-bottom: 10px; }
     .logo-title {
@@ -45,7 +43,7 @@
     }
     .logo-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; }
 
-    /* ── Tab switcher ── */
+    /* Tab switcher */
     .tab-row {
       display: flex; width: 100%; max-width: 400px;
       background: rgba(255,255,255,0.06); border-radius: 14px;
@@ -59,7 +57,7 @@
     }
     .tab-btn.active { background: #ff9a00; color: #fff; }
 
-    /* ── Card ── */
+    /* Card */
     .card {
       width: 100%; max-width: 400px;
       background: rgba(255,255,255,0.05);
@@ -67,7 +65,7 @@
       border-radius: 24px; padding: 24px 22px 28px;
     }
 
-    /* ── Section title inside card ── */
+    /* Section title */
     .section-title {
       font-size: 11px; font-weight: 700; text-transform: uppercase;
       letter-spacing: 1.2px; color: rgba(255,255,255,0.35);
@@ -75,8 +73,8 @@
     }
     .section-title:first-child { margin-top: 0; }
 
-    /* ── Input group ── */
-    .input-group { display: flex; flex-direction: column; gap: 10px; }
+    /* Input group */
+    .input-group { display: flex; flex-direction: column; gap: 12px; }
     .input-wrap { position: relative; }
     .input-wrap input,
     .input-wrap select {
@@ -85,8 +83,7 @@
       border-radius: 12px; color: #fff;
       font-family: 'Poppins', sans-serif; font-size: 14px;
       padding: 13px 14px; outline: none;
-      transition: border-color 0.2s;
-      appearance: none;
+      transition: border-color 0.2s; appearance: none;
     }
     .input-wrap input::placeholder { color: rgba(255,255,255,0.3); }
     .input-wrap input:focus,
@@ -96,17 +93,70 @@
       position: absolute; top: -8px; left: 12px;
       font-size: 10px; font-weight: 600; color: #ff9a00;
       background: #111; padding: 0 4px; letter-spacing: 0.5px;
-      text-transform: uppercase;
+      text-transform: uppercase; z-index: 1;
     }
+
+    /* Password eye toggle */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 44px; }
+    .pw-eye {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: rgba(255,255,255,0.35); font-size: 16px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .pw-eye:hover { color: rgba(255,255,255,0.7); }
 
     /* Two inputs side by side */
     .input-row { display: flex; gap: 10px; }
     .input-row .input-wrap { flex: 1; }
 
-    /* ── Avatar picker ── */
-    .avatar-row {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 6px;
+    /* ── Country code + phone ── */
+    .phone-row { display: flex; gap: 8px; }
+    .country-wrap {
+      position: relative; flex-shrink: 0; width: 130px;
     }
+    .country-wrap .input-label { background: #111; }
+    .country-select {
+      width: 100%; background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px; color: #fff;
+      font-family: 'Poppins', sans-serif; font-size: 13px;
+      padding: 13px 10px; outline: none;
+      transition: border-color 0.2s; appearance: none; cursor: pointer;
+    }
+    .country-select:focus { border-color: #ff9a00; }
+    .country-select option { background: #1a1a1a; color: #fff; }
+    /* Custom dropdown arrow */
+    .country-wrap::after {
+      content: '▾'; position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%); color: rgba(255,255,255,0.4);
+      pointer-events: none; font-size: 12px;
+    }
+    .phone-num-wrap { flex: 1; position: relative; }
+
+    /* ── Remember me ── */
+    .remember-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 14px; cursor: pointer; user-select: none;
+    }
+    .remember-box {
+      width: 20px; height: 20px; border-radius: 6px;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s; cursor: pointer;
+    }
+    .remember-box.checked {
+      background: #ff9a00; border-color: #ff9a00;
+    }
+    .remember-box svg { display: none; width: 12px; height: 12px; }
+    .remember-box.checked svg { display: block; }
+    .remember-label { font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 500; }
+    .remember-label span { color: #ff9a00; font-weight: 600; }
+
+    /* Avatar picker */
+    .avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
     .avatar-preview {
       width: 60px; height: 60px; border-radius: 50%;
       background: #333; border: 2px solid #ff9a00;
@@ -116,18 +166,19 @@
     }
     .avatar-hint { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
 
-    /* ── Error message ── */
+    /* Error / success messages */
     .err-msg {
-      display: none; background: rgba(200,0,0,0.15);
-      border: 1px solid #c00; border-radius: 10px;
-      padding: 10px 14px; font-size: 12px; color: #ff7070;
+      display: none; border-radius: 10px;
+      padding: 10px 14px; font-size: 12px;
       margin-top: 14px; line-height: 1.5;
     }
     .err-msg.visible { display: block; }
+    .err-msg.error   { background: rgba(200,0,0,0.15); border: 1px solid #c00; color: #ff7070; }
+    .err-msg.info    { background: rgba(255,154,0,0.12); border: 1px solid #ff9a00; color: #ffcc77; }
 
-    /* ── Submit button ── */
+    /* Submit button */
     .submit-btn {
-      width: 100%; margin-top: 20px; padding: 15px;
+      width: 100%; margin-top: 18px; padding: 15px;
       background: linear-gradient(135deg, #ff9a00, #c43000);
       border: none; border-radius: 14px; color: #fff;
       font-family: 'Poppins', sans-serif; font-size: 15px;
@@ -137,22 +188,13 @@
     .submit-btn:hover { opacity: 0.92; }
     .submit-btn:active { transform: scale(0.98); }
 
-    /* ── Divider ── */
-    .divider {
-      display: flex; align-items: center; gap: 10px;
-      margin: 18px 0; color: rgba(255,255,255,0.2); font-size: 12px;
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1);
-    }
-
-    /* ── Footer note ── */
+    /* Footer */
     .footer-note {
       margin-top: 20px; font-size: 11px; color: rgba(255,255,255,0.25);
       text-align: center; line-height: 1.6; max-width: 320px;
     }
 
-    /* Gemini key section (collapsible) */
+    /* Gemini key section */
     .gemini-toggle {
       width: 100%; max-width: 400px; margin-top: 14px;
       background: rgba(255,154,0,0.08); border: 1px solid rgba(255,154,0,0.25);
@@ -165,9 +207,7 @@
     }
     .gemini-toggle-body { display: none; padding: 0 16px 14px; }
     .gemini-toggle-body.open { display: block; }
-    .gemini-toggle-body p {
-      font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 8px;
-    }
+    .gemini-toggle-body p { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 8px; }
     .gemini-toggle-body a { color: #ff9a00; }
     .gemini-toggle-body input {
       width: 100%; background: rgba(0,0,0,0.3);
@@ -180,6 +220,30 @@
       color: #fff; font-family: 'Poppins', sans-serif; font-size: 12px;
       font-weight: 700; padding: 9px; cursor: pointer;
     }
+
+    /* Saved account banner */
+    .saved-banner {
+      display: none; width: 100%; max-width: 400px;
+      background: rgba(88,185,71,0.12); border: 1px solid #58b947;
+      border-radius: 14px; padding: 12px 16px; margin-bottom: 14px;
+      align-items: center; gap: 12px;
+    }
+    .saved-banner.visible { display: flex; }
+    .saved-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .saved-info { flex: 1; }
+    .saved-name { font-size: 13px; font-weight: 700; color: #fff; }
+    .saved-sub  { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+    .saved-clear {
+      background: none; border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px; color: rgba(255,255,255,0.5); font-size: 11px;
+      padding: 4px 10px; cursor: pointer; font-family: 'Poppins', sans-serif;
+      white-space: nowrap;
+    }
+    .saved-clear:hover { border-color: #c00; color: #ff7070; }
   </style>
 </head>
 <body>
@@ -190,10 +254,19 @@
 
     <!-- Logo -->
     <div class="logo-block">
-      <img src="Element/Logo.png" alt="Logo" class="logo-img"
-           onerror="this.style.display='none'" />
+      <img src="Element/Logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'" />
       <div class="logo-title">Campus Food West</div>
       <div class="logo-sub">Food Waste Management System</div>
+    </div>
+
+    <!-- Saved account banner (shown when Remember Me was ticked) -->
+    <div class="saved-banner" id="savedBanner">
+      <div class="saved-avatar" id="savedAvatar">?</div>
+      <div class="saved-info">
+        <div class="saved-name" id="savedName">—</div>
+        <div class="saved-sub" id="savedSub">Remembered account · tap Sign In</div>
+      </div>
+      <button class="saved-clear" onclick="clearRemembered()">Not you?</button>
     </div>
 
     <!-- Tab Row -->
@@ -202,24 +275,44 @@
       <button class="tab-btn"        id="tabReg"   onclick="switchTab('register')">Register</button>
     </div>
 
-    <!-- ══════════════ LOGIN CARD ══════════════ -->
+    <!-- ══════════ LOGIN CARD ══════════ -->
     <div class="card" id="loginCard">
-      <div class="section-title">Student ID</div>
+      <div class="section-title">Sign In</div>
       <div class="input-group">
+
         <div class="input-wrap">
           <span class="input-label">Student ID</span>
-          <input type="text" id="loginId" placeholder="e.g. 225N000226" maxlength="20" />
+          <input type="text" id="loginId" placeholder="e.g. 225N000226" maxlength="20"
+                 autocomplete="username" />
         </div>
-        <div class="input-wrap">
+
+        <div class="input-wrap pw-wrap">
           <span class="input-label">Password</span>
-          <input type="password" id="loginPw" placeholder="Your password" />
+          <input type="password" id="loginPw" placeholder="Your password"
+                 autocomplete="current-password" />
+          <button class="pw-eye" onclick="togglePw('loginPw',this)" tabindex="-1">👁</button>
         </div>
+
       </div>
-      <div class="err-msg" id="loginErr"></div>
+
+      <!-- Remember me -->
+      <div class="remember-row" onclick="toggleRemember()">
+        <div class="remember-box" id="rememberBox">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5 6.5 4.5 9.5 10.5 2.5"/>
+          </svg>
+        </div>
+        <span class="remember-label">Remember me on this device
+          <span>(stay signed in)</span>
+        </span>
+      </div>
+
+      <div class="err-msg error" id="loginErr"></div>
       <button class="submit-btn" onclick="doLogin()">Sign In →</button>
     </div>
 
-    <!-- ══════════════ REGISTER CARD ══════════════ -->
+    <!-- ══════════ REGISTER CARD ══════════ -->
     <div class="card" id="regCard" style="display:none;">
 
       <div class="section-title">Personal Info</div>
@@ -227,15 +320,15 @@
       <!-- Avatar preview -->
       <div class="avatar-row">
         <div class="avatar-preview" id="avatarPreview">?</div>
-        <div class="avatar-hint">Your avatar initial is set<br>automatically from your name.</div>
+        <div class="avatar-hint">Your avatar is generated<br>automatically from your name.</div>
       </div>
 
       <div class="input-group">
+
         <div class="input-row">
           <div class="input-wrap">
             <span class="input-label">First Name</span>
-            <input type="text" id="regFirst" placeholder="First name"
-                   oninput="updateAvatar()" />
+            <input type="text" id="regFirst" placeholder="First name" oninput="updateAvatar()" />
           </div>
           <div class="input-wrap">
             <span class="input-label">Last Name</span>
@@ -248,10 +341,21 @@
           <input type="text" id="regId" placeholder="e.g. 225N000226" maxlength="20" />
         </div>
 
-        <div class="input-wrap">
-          <span class="input-label">Phone Number</span>
-          <input type="tel" id="regPhone" placeholder="e.g. 20 77 826 451" />
+        <!-- ── Phone with country code ── -->
+        <div class="phone-row">
+          <div class="country-wrap">
+            <span class="input-label">Country</span>
+            <select class="country-select" id="regCountryCode">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div class="phone-num-wrap input-wrap">
+            <span class="input-label">Phone Number</span>
+            <input type="tel" id="regPhone" placeholder="e.g. 77 826 451"
+                   autocomplete="tel-national" />
+          </div>
         </div>
+
       </div>
 
       <div class="section-title">Academic Info</div>
@@ -282,22 +386,26 @@
 
       <div class="section-title">Account</div>
       <div class="input-group">
-        <div class="input-wrap">
+        <div class="input-wrap pw-wrap">
           <span class="input-label">Password</span>
-          <input type="password" id="regPw" placeholder="Create a password (min 6 chars)" />
+          <input type="password" id="regPw" placeholder="Create a password (min 6 chars)"
+                 autocomplete="new-password" />
+          <button class="pw-eye" onclick="togglePw('regPw',this)" tabindex="-1">👁</button>
         </div>
-        <div class="input-wrap">
+        <div class="input-wrap pw-wrap">
           <span class="input-label">Confirm Password</span>
-          <input type="password" id="regPw2" placeholder="Repeat password" />
+          <input type="password" id="regPw2" placeholder="Repeat password"
+                 autocomplete="new-password" />
+          <button class="pw-eye" onclick="togglePw('regPw2',this)" tabindex="-1">👁</button>
         </div>
       </div>
 
-      <div class="err-msg" id="regErr"></div>
+      <div class="err-msg error" id="regErr"></div>
       <button class="submit-btn" onclick="doRegister()">Create Account →</button>
     </div>
 
-    <!-- Gemini API key (optional, saved once) -->
-    <div class="gemini-toggle" id="geminiSection">
+    <!-- Gemini API key -->
+    <div class="gemini-toggle">
       <div class="gemini-toggle-header" onclick="toggleGemini()">
         🔑 Gemini API Key (for food scanning)
         <span id="geminiArrow">▼</span>
@@ -322,147 +430,445 @@
   </div><!-- end page-wrap -->
 
 <script>
-  // ── Redirect if already logged in ──
-  (function() {
-    const u = getUser();
-    if (u && u.loggedIn) window.location.replace('index.html');
-  })();
+// ═══════════════════════════════════════════════════════
+//  COUNTRY CODES  — flag emoji + dial code + country name
+// ═══════════════════════════════════════════════════════
+const COUNTRIES = [
+  { code: '+93',  flag: '🇦🇫', name: 'Afghanistan'       },
+  { code: '+355', flag: '🇦🇱', name: 'Albania'           },
+  { code: '+213', flag: '🇩🇿', name: 'Algeria'           },
+  { code: '+376', flag: '🇦🇩', name: 'Andorra'           },
+  { code: '+244', flag: '🇦🇴', name: 'Angola'            },
+  { code: '+54',  flag: '🇦🇷', name: 'Argentina'         },
+  { code: '+374', flag: '🇦🇲', name: 'Armenia'           },
+  { code: '+61',  flag: '🇦🇺', name: 'Australia'         },
+  { code: '+43',  flag: '🇦🇹', name: 'Austria'           },
+  { code: '+994', flag: '🇦🇿', name: 'Azerbaijan'        },
+  { code: '+973', flag: '🇧🇭', name: 'Bahrain'           },
+  { code: '+880', flag: '🇧🇩', name: 'Bangladesh'        },
+  { code: '+32',  flag: '🇧🇪', name: 'Belgium'           },
+  { code: '+501', flag: '🇧🇿', name: 'Belize'            },
+  { code: '+229', flag: '🇧🇯', name: 'Benin'             },
+  { code: '+975', flag: '🇧🇹', name: 'Bhutan'            },
+  { code: '+591', flag: '🇧🇴', name: 'Bolivia'           },
+  { code: '+387', flag: '🇧🇦', name: 'Bosnia'            },
+  { code: '+267', flag: '🇧🇼', name: 'Botswana'          },
+  { code: '+55',  flag: '🇧🇷', name: 'Brazil'            },
+  { code: '+673', flag: '🇧🇳', name: 'Brunei'            },
+  { code: '+359', flag: '🇧🇬', name: 'Bulgaria'          },
+  { code: '+226', flag: '🇧🇫', name: 'Burkina Faso'      },
+  { code: '+257', flag: '🇧🇮', name: 'Burundi'           },
+  { code: '+855', flag: '🇰🇭', name: 'Cambodia'          },
+  { code: '+237', flag: '🇨🇲', name: 'Cameroon'          },
+  { code: '+1',   flag: '🇨🇦', name: 'Canada'            },
+  { code: '+238', flag: '🇨🇻', name: 'Cape Verde'        },
+  { code: '+236', flag: '🇨🇫', name: 'Central African Rep.' },
+  { code: '+235', flag: '🇹🇩', name: 'Chad'              },
+  { code: '+56',  flag: '🇨🇱', name: 'Chile'             },
+  { code: '+86',  flag: '🇨🇳', name: 'China'             },
+  { code: '+57',  flag: '🇨🇴', name: 'Colombia'          },
+  { code: '+269', flag: '🇰🇲', name: 'Comoros'           },
+  { code: '+243', flag: '🇨🇩', name: 'Congo (DRC)'       },
+  { code: '+242', flag: '🇨🇬', name: 'Congo (Rep.)'      },
+  { code: '+506', flag: '🇨🇷', name: 'Costa Rica'        },
+  { code: '+225', flag: '🇨🇮', name: "Côte d'Ivoire"     },
+  { code: '+385', flag: '🇭🇷', name: 'Croatia'           },
+  { code: '+53',  flag: '🇨🇺', name: 'Cuba'              },
+  { code: '+357', flag: '🇨🇾', name: 'Cyprus'            },
+  { code: '+420', flag: '🇨🇿', name: 'Czech Republic'    },
+  { code: '+45',  flag: '🇩🇰', name: 'Denmark'           },
+  { code: '+253', flag: '🇩🇯', name: 'Djibouti'          },
+  { code: '+593', flag: '🇪🇨', name: 'Ecuador'           },
+  { code: '+20',  flag: '🇪🇬', name: 'Egypt'             },
+  { code: '+503', flag: '🇸🇻', name: 'El Salvador'       },
+  { code: '+240', flag: '🇬🇶', name: 'Equatorial Guinea' },
+  { code: '+291', flag: '🇪🇷', name: 'Eritrea'           },
+  { code: '+372', flag: '🇪🇪', name: 'Estonia'           },
+  { code: '+268', flag: '🇸🇿', name: 'Eswatini'          },
+  { code: '+251', flag: '🇪🇹', name: 'Ethiopia'          },
+  { code: '+679', flag: '🇫🇯', name: 'Fiji'              },
+  { code: '+358', flag: '🇫🇮', name: 'Finland'           },
+  { code: '+33',  flag: '🇫🇷', name: 'France'            },
+  { code: '+241', flag: '🇬🇦', name: 'Gabon'             },
+  { code: '+220', flag: '🇬🇲', name: 'Gambia'            },
+  { code: '+995', flag: '🇬🇪', name: 'Georgia'           },
+  { code: '+49',  flag: '🇩🇪', name: 'Germany'           },
+  { code: '+233', flag: '🇬🇭', name: 'Ghana'             },
+  { code: '+30',  flag: '🇬🇷', name: 'Greece'            },
+  { code: '+502', flag: '🇬🇹', name: 'Guatemala'         },
+  { code: '+224', flag: '🇬🇳', name: 'Guinea'            },
+  { code: '+245', flag: '🇬🇼', name: 'Guinea-Bissau'     },
+  { code: '+592', flag: '🇬🇾', name: 'Guyana'            },
+  { code: '+509', flag: '🇭🇹', name: 'Haiti'             },
+  { code: '+504', flag: '🇭🇳', name: 'Honduras'          },
+  { code: '+36',  flag: '🇭🇺', name: 'Hungary'           },
+  { code: '+354', flag: '🇮🇸', name: 'Iceland'           },
+  { code: '+91',  flag: '🇮🇳', name: 'India'             },
+  { code: '+62',  flag: '🇮🇩', name: 'Indonesia'         },
+  { code: '+98',  flag: '🇮🇷', name: 'Iran'              },
+  { code: '+964', flag: '🇮🇶', name: 'Iraq'              },
+  { code: '+353', flag: '🇮🇪', name: 'Ireland'           },
+  { code: '+972', flag: '🇮🇱', name: 'Israel'            },
+  { code: '+39',  flag: '🇮🇹', name: 'Italy'             },
+  { code: '+1876',flag: '🇯🇲', name: 'Jamaica'           },
+  { code: '+81',  flag: '🇯🇵', name: 'Japan'             },
+  { code: '+962', flag: '🇯🇴', name: 'Jordan'            },
+  { code: '+7',   flag: '🇰🇿', name: 'Kazakhstan'        },
+  { code: '+254', flag: '🇰🇪', name: 'Kenya'             },
+  { code: '+850', flag: '🇰🇵', name: 'North Korea'       },
+  { code: '+82',  flag: '🇰🇷', name: 'South Korea'       },
+  { code: '+965', flag: '🇰🇼', name: 'Kuwait'            },
+  { code: '+996', flag: '🇰🇬', name: 'Kyrgyzstan'        },
+  { code: '+856', flag: '🇱🇦', name: 'Laos'              },
+  { code: '+371', flag: '🇱🇻', name: 'Latvia'            },
+  { code: '+961', flag: '🇱🇧', name: 'Lebanon'           },
+  { code: '+266', flag: '🇱🇸', name: 'Lesotho'           },
+  { code: '+231', flag: '🇱🇷', name: 'Liberia'           },
+  { code: '+218', flag: '🇱🇾', name: 'Libya'             },
+  { code: '+423', flag: '🇱🇮', name: 'Liechtenstein'     },
+  { code: '+370', flag: '🇱🇹', name: 'Lithuania'         },
+  { code: '+352', flag: '🇱🇺', name: 'Luxembourg'        },
+  { code: '+261', flag: '🇲🇬', name: 'Madagascar'        },
+  { code: '+265', flag: '🇲🇼', name: 'Malawi'            },
+  { code: '+60',  flag: '🇲🇾', name: 'Malaysia'          },
+  { code: '+960', flag: '🇲🇻', name: 'Maldives'          },
+  { code: '+223', flag: '🇲🇱', name: 'Mali'              },
+  { code: '+356', flag: '🇲🇹', name: 'Malta'             },
+  { code: '+222', flag: '🇲🇷', name: 'Mauritania'        },
+  { code: '+230', flag: '🇲🇺', name: 'Mauritius'         },
+  { code: '+52',  flag: '🇲🇽', name: 'Mexico'            },
+  { code: '+373', flag: '🇲🇩', name: 'Moldova'           },
+  { code: '+976', flag: '🇲🇳', name: 'Mongolia'          },
+  { code: '+382', flag: '🇲🇪', name: 'Montenegro'        },
+  { code: '+212', flag: '🇲🇦', name: 'Morocco'           },
+  { code: '+258', flag: '🇲🇿', name: 'Mozambique'        },
+  { code: '+95',  flag: '🇲🇲', name: 'Myanmar'           },
+  { code: '+264', flag: '🇳🇦', name: 'Namibia'           },
+  { code: '+977', flag: '🇳🇵', name: 'Nepal'             },
+  { code: '+31',  flag: '🇳🇱', name: 'Netherlands'       },
+  { code: '+64',  flag: '🇳🇿', name: 'New Zealand'       },
+  { code: '+505', flag: '🇳🇮', name: 'Nicaragua'         },
+  { code: '+227', flag: '🇳🇪', name: 'Niger'             },
+  { code: '+234', flag: '🇳🇬', name: 'Nigeria'           },
+  { code: '+389', flag: '🇲🇰', name: 'North Macedonia'   },
+  { code: '+47',  flag: '🇳🇴', name: 'Norway'            },
+  { code: '+968', flag: '🇴🇲', name: 'Oman'              },
+  { code: '+92',  flag: '🇵🇰', name: 'Pakistan'          },
+  { code: '+507', flag: '🇵🇦', name: 'Panama'            },
+  { code: '+675', flag: '🇵🇬', name: 'Papua New Guinea'  },
+  { code: '+595', flag: '🇵🇾', name: 'Paraguay'          },
+  { code: '+51',  flag: '🇵🇪', name: 'Peru'              },
+  { code: '+63',  flag: '🇵🇭', name: 'Philippines'       },
+  { code: '+48',  flag: '🇵🇱', name: 'Poland'            },
+  { code: '+351', flag: '🇵🇹', name: 'Portugal'          },
+  { code: '+974', flag: '🇶🇦', name: 'Qatar'             },
+  { code: '+40',  flag: '🇷🇴', name: 'Romania'           },
+  { code: '+7',   flag: '🇷🇺', name: 'Russia'            },
+  { code: '+250', flag: '🇷🇼', name: 'Rwanda'            },
+  { code: '+966', flag: '🇸🇦', name: 'Saudi Arabia'      },
+  { code: '+221', flag: '🇸🇳', name: 'Senegal'           },
+  { code: '+381', flag: '🇷🇸', name: 'Serbia'            },
+  { code: '+232', flag: '🇸🇱', name: 'Sierra Leone'      },
+  { code: '+65',  flag: '🇸🇬', name: 'Singapore'         },
+  { code: '+421', flag: '🇸🇰', name: 'Slovakia'          },
+  { code: '+386', flag: '🇸🇮', name: 'Slovenia'          },
+  { code: '+252', flag: '🇸🇴', name: 'Somalia'           },
+  { code: '+27',  flag: '🇿🇦', name: 'South Africa'      },
+  { code: '+211', flag: '🇸🇸', name: 'South Sudan'       },
+  { code: '+34',  flag: '🇪🇸', name: 'Spain'             },
+  { code: '+94',  flag: '🇱🇰', name: 'Sri Lanka'         },
+  { code: '+249', flag: '🇸🇩', name: 'Sudan'             },
+  { code: '+597', flag: '🇸🇷', name: 'Suriname'          },
+  { code: '+46',  flag: '🇸🇪', name: 'Sweden'            },
+  { code: '+41',  flag: '🇨🇭', name: 'Switzerland'       },
+  { code: '+963', flag: '🇸🇾', name: 'Syria'             },
+  { code: '+886', flag: '🇹🇼', name: 'Taiwan'            },
+  { code: '+992', flag: '🇹🇯', name: 'Tajikistan'        },
+  { code: '+255', flag: '🇹🇿', name: 'Tanzania'          },
+  { code: '+66',  flag: '🇹🇭', name: 'Thailand'          },
+  { code: '+228', flag: '🇹🇬', name: 'Togo'              },
+  { code: '+216', flag: '🇹🇳', name: 'Tunisia'           },
+  { code: '+90',  flag: '🇹🇷', name: 'Turkey'            },
+  { code: '+993', flag: '🇹🇲', name: 'Turkmenistan'      },
+  { code: '+256', flag: '🇺🇬', name: 'Uganda'            },
+  { code: '+380', flag: '🇺🇦', name: 'Ukraine'           },
+  { code: '+971', flag: '🇦🇪', name: 'UAE'               },
+  { code: '+44',  flag: '🇬🇧', name: 'United Kingdom'    },
+  { code: '+1',   flag: '🇺🇸', name: 'United States'     },
+  { code: '+598', flag: '🇺🇾', name: 'Uruguay'           },
+  { code: '+998', flag: '🇺🇿', name: 'Uzbekistan'        },
+  { code: '+58',  flag: '🇻🇪', name: 'Venezuela'         },
+  { code: '+84',  flag: '🇻🇳', name: 'Vietnam'           },
+  { code: '+967', flag: '🇾🇪', name: 'Yemen'             },
+  { code: '+260', flag: '🇿🇲', name: 'Zambia'            },
+  { code: '+263', flag: '🇿🇼', name: 'Zimbabwe'          },
+];
 
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem('cfwUser')) || null; } catch(e) { return null; }
-  }
-  function saveUser(u) { localStorage.setItem('cfwUser', JSON.stringify(u)); }
-
-  // ── Tab switching ──
-  function switchTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
-    document.getElementById('regCard').style.display   = isLogin ? 'none'  : 'block';
-    document.getElementById('tabLogin').classList.toggle('active', isLogin);
-    document.getElementById('tabReg').classList.toggle('active', !isLogin);
-    clearErrors();
-  }
-
-  function clearErrors() {
-    document.getElementById('loginErr').classList.remove('visible');
-    document.getElementById('regErr').classList.remove('visible');
-  }
-
-  function showErr(id, msg) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.classList.add('visible');
-  }
-
-  // ── Avatar initial from first name ──
-  function updateAvatar() {
-    const first = document.getElementById('regFirst').value.trim();
-    const av    = document.getElementById('avatarPreview');
-    av.textContent = first ? first[0].toUpperCase() : '?';
-    const colors = ['#c43000','#0011f4','#ff9a00','#58b947','#9b00c4'];
-    if (first) {
-      const idx = first.charCodeAt(0) % colors.length;
-      av.style.background = colors[idx];
-    } else {
-      av.style.background = '#333';
-    }
-  }
-
-  // ── LOGIN ──
-  function doLogin() {
-    clearErrors();
-    const id = document.getElementById('loginId').value.trim();
-    const pw = document.getElementById('loginPw').value;
-
-    if (!id || !pw) { showErr('loginErr', 'Please enter your Student ID and password.'); return; }
-
-    const u = getUser();
-    if (!u) {
-      showErr('loginErr', 'No account found. Please register first.');
-      return;
-    }
-    if (u.studentId.toLowerCase() !== id.toLowerCase()) {
-      showErr('loginErr', 'Student ID not found. Check your ID or register.');
-      return;
-    }
-    if (u.password !== pw) {
-      showErr('loginErr', 'Incorrect password. Please try again.');
-      return;
-    }
-
-    u.loggedIn = true;
-    saveUser(u);
-    window.location.href = 'index.html';
-  }
-
-  // ── REGISTER ──
-  function doRegister() {
-    clearErrors();
-    const first  = document.getElementById('regFirst').value.trim();
-    const last   = document.getElementById('regLast').value.trim();
-    const id     = document.getElementById('regId').value.trim();
-    const phone  = document.getElementById('regPhone').value.trim();
-    const year   = document.getElementById('regYear').value;
-    const status = document.getElementById('regStatus').value;
-    const pw     = document.getElementById('regPw').value;
-    const pw2    = document.getElementById('regPw2').value;
-
-    // Validation
-    if (!first || !last)  { showErr('regErr', 'Please enter your first and last name.'); return; }
-    if (!id)              { showErr('regErr', 'Please enter your Student ID.'); return; }
-    if (!phone)           { showErr('regErr', 'Please enter your phone number.'); return; }
-    if (!year)            { showErr('regErr', 'Please select your year of study.'); return; }
-    if (!status)          { showErr('regErr', 'Please select your student status.'); return; }
-    if (pw.length < 6)    { showErr('regErr', 'Password must be at least 6 characters.'); return; }
-    if (pw !== pw2)       { showErr('regErr', 'Passwords do not match.'); return; }
-
-    // Build user object — every field the app needs
-    const user = {
-      loggedIn:    true,
-      firstName:   first,
-      lastName:    last,
-      fullName:    first + ' ' + last,
-      initial:     first[0].toUpperCase(),
-      studentId:   id,
-      phone:       phone,
-      yearOfStudy: year,
-      studentStatus: status,
-      password:    pw,
-      registeredAt: new Date().toISOString()
-    };
-    saveUser(user);
-    window.location.href = 'index.html';
-  }
-
-  // ── Gemini key ──
-  function toggleGemini() {
-    const body  = document.getElementById('geminiBody');
-    const arrow = document.getElementById('geminiArrow');
-    const open  = body.classList.toggle('open');
-    arrow.textContent = open ? '▲' : '▼';
-  }
-
-  function saveGeminiKey() {
-    const val = document.getElementById('geminiKeyInput').value.trim();
-    if (val.length < 20) { alert('That doesn\'t look like a valid key. Please check it.'); return; }
-    localStorage.setItem('cfwGeminiKey', val);
-    document.getElementById('geminiBody').classList.remove('open');
-    document.getElementById('geminiArrow').textContent = '▼';
-    alert('✅ Gemini API key saved!');
-  }
-
-  // Pre-fill gemini input if key already saved
-  (function() {
-    const k = localStorage.getItem('cfwGeminiKey');
-    if (k) document.getElementById('geminiKeyInput').value = k;
-  })();
-
-  // Allow Enter key to submit
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    const loginVisible = document.getElementById('loginCard').style.display !== 'none';
-    if (loginVisible) doLogin(); else doRegister();
+// Build country select
+(function buildCountrySelect() {
+  const sel = document.getElementById('regCountryCode');
+  // Default to Thailand (+66) since user is in Bangkok
+  const defaultCode = '+66';
+  COUNTRIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.code;
+    opt.textContent = `${c.flag} ${c.code}`;
+    opt.title = c.name;
+    if (c.code === defaultCode && c.name === 'Thailand') opt.selected = true;
+    sel.appendChild(opt);
   });
+})();
+
+// ═══════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════
+
+function getUser() {
+  try { return JSON.parse(localStorage.getItem('cfwUser')) || null; } catch(e) { return null; }
+}
+function saveUser(u) { localStorage.setItem('cfwUser', JSON.stringify(u)); }
+
+function avatarColor(initial) {
+  const colors = ['#c43000','#0011f4','#ff9a00','#58b947','#9b00c4','#007acc'];
+  return colors[(initial || 'A').charCodeAt(0) % colors.length];
+}
+
+// ── Remember-me state ──
+let rememberMe = false;
+function toggleRemember() {
+  rememberMe = !rememberMe;
+  document.getElementById('rememberBox').classList.toggle('checked', rememberMe);
+}
+
+// ── Password eye toggle ──
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+
+// ── Saved account banner ──
+function showSavedBanner() {
+  const remembered = localStorage.getItem('cfwRemembered');
+  if (!remembered) return;
+  const u = getUser();
+  if (!u || !u.loggedIn) return; // not logged in, skip
+
+  const banner = document.getElementById('savedBanner');
+  const av     = document.getElementById('savedAvatar');
+  av.textContent    = u.initial || '?';
+  av.style.background = avatarColor(u.initial || 'A');
+  document.getElementById('savedName').textContent = u.fullName || u.firstName || '—';
+  document.getElementById('savedSub').textContent  =
+    `ID: ${u.studentId || '—'}  ·  Remembered account`;
+  banner.classList.add('visible');
+
+  // Pre-fill the login ID
+  document.getElementById('loginId').value = u.studentId || '';
+
+  // Tick the remember box to match saved preference
+  rememberMe = true;
+  document.getElementById('rememberBox').classList.add('checked');
+}
+
+function clearRemembered() {
+  localStorage.removeItem('cfwRemembered');
+  // Also log the current user out so the banner goes away
+  const u = getUser();
+  if (u) { u.loggedIn = false; saveUser(u); }
+  document.getElementById('savedBanner').classList.remove('visible');
+  document.getElementById('loginId').value = '';
+  document.getElementById('loginPw').value = '';
+  rememberMe = false;
+  document.getElementById('rememberBox').classList.remove('checked');
+}
+
+// ── Redirect if already logged in AND remembered ──
+(function() {
+  const u = getUser();
+  const rem = localStorage.getItem('cfwRemembered');
+  // Only auto-redirect if remember-me was explicitly set AND user is still logged in
+  if (u && u.loggedIn && rem === 'yes') {
+    window.location.replace('index.html');
+    return;
+  }
+  // Otherwise show the saved banner (so they can sign in faster)
+  showSavedBanner();
+})();
+
+// ═══════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('regCard').style.display   = isLogin ? 'none'  : 'block';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabReg').classList.toggle('active', !isLogin);
+  clearErrors();
+}
+
+function clearErrors() {
+  ['loginErr','regErr'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('visible','error','info');
+  });
+}
+function showErr(id, msg, type='error') {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `err-msg ${type} visible`;
+}
+
+// ── Avatar preview ──
+function updateAvatar() {
+  const first = document.getElementById('regFirst').value.trim();
+  const av    = document.getElementById('avatarPreview');
+  av.textContent      = first ? first[0].toUpperCase() : '?';
+  av.style.background = first ? avatarColor(first[0].toUpperCase()) : '#333';
+}
+
+// ═══════════════════════════════════
+//  LOGIN
+// ═══════════════════════════════════
+function doLogin() {
+  clearErrors();
+  const id = document.getElementById('loginId').value.trim();
+  const pw = document.getElementById('loginPw').value;
+
+  if (!id || !pw) {
+    showErr('loginErr', 'Please enter your Student ID and password.');
+    return;
+  }
+
+  const u = getUser();
+  if (!u) {
+    showErr('loginErr', 'No account found on this device. Please register first.');
+    return;
+  }
+
+  // ── Different account check ──
+  // If a stored user exists but the entered ID doesn't match,
+  // clear everything and ask them to register or try again.
+  if (u.studentId.toLowerCase() !== id.toLowerCase()) {
+    // Wipe session data so the previous account doesn't bleed through
+    localStorage.removeItem('cfwRemembered');
+    u.loggedIn = false;
+    saveUser(u);
+    showErr('loginErr',
+      `No account found for "${id}". ` +
+      `If you're a different person, please register a new account, ` +
+      `or check your Student ID.`
+    );
+    return;
+  }
+
+  if (u.password !== pw) {
+    showErr('loginErr', 'Incorrect password. Please try again.');
+    return;
+  }
+
+  // ── Success ──
+  u.loggedIn = true;
+  saveUser(u);
+
+  // Handle Remember Me
+  if (rememberMe) {
+    localStorage.setItem('cfwRemembered', 'yes');
+  } else {
+    localStorage.removeItem('cfwRemembered');
+  }
+
+  window.location.href = 'index.html';
+}
+
+// ═══════════════════════════════════
+//  REGISTER
+// ═══════════════════════════════════
+function doRegister() {
+  clearErrors();
+  const first       = document.getElementById('regFirst').value.trim();
+  const last        = document.getElementById('regLast').value.trim();
+  const id          = document.getElementById('regId').value.trim();
+  const countryCode = document.getElementById('regCountryCode').value;
+  const phoneNum    = document.getElementById('regPhone').value.trim();
+  const year        = document.getElementById('regYear').value;
+  const status      = document.getElementById('regStatus').value;
+  const pw          = document.getElementById('regPw').value;
+  const pw2         = document.getElementById('regPw2').value;
+
+  if (!first || !last)  { showErr('regErr', 'Please enter your first and last name.');     return; }
+  if (!id)              { showErr('regErr', 'Please enter your Student ID.');               return; }
+  if (!phoneNum)        { showErr('regErr', 'Please enter your phone number.');             return; }
+  if (!year)            { showErr('regErr', 'Please select your year of study.');           return; }
+  if (!status)          { showErr('regErr', 'Please select your student status.');          return; }
+  if (pw.length < 6)    { showErr('regErr', 'Password must be at least 6 characters.');    return; }
+  if (pw !== pw2)       { showErr('regErr', 'Passwords do not match. Please re-enter.');   return; }
+
+  // Combine country code + number for storage
+  const fullPhone = `${countryCode} ${phoneNum}`;
+
+  // If another account already exists on this device, warn and wipe
+  const existing = getUser();
+  if (existing && existing.studentId && existing.studentId.toLowerCase() !== id.toLowerCase()) {
+    if (!confirm(
+      `A different account (${existing.fullName || existing.studentId}) is saved on this device.\n\n` +
+      `Registering will replace it. Continue?`
+    )) return;
+    // Clear old session
+    localStorage.removeItem('cfwState');
+    localStorage.removeItem('cfwRemembered');
+  }
+
+  const user = {
+    loggedIn:      true,
+    firstName:     first,
+    lastName:      last,
+    fullName:      first + ' ' + last,
+    initial:       first[0].toUpperCase(),
+    studentId:     id,
+    countryCode:   countryCode,
+    phone:         fullPhone,
+    yearOfStudy:   year,
+    studentStatus: status,
+    password:      pw,
+    registeredAt:  new Date().toISOString()
+  };
+  saveUser(user);
+  // New registration is not auto-remembered unless they tick it next login
+  localStorage.removeItem('cfwRemembered');
+  window.location.href = 'index.html';
+}
+
+// ═══════════════════════════════════
+//  GEMINI KEY
+// ═══════════════════════════════════
+function toggleGemini() {
+  const body  = document.getElementById('geminiBody');
+  const arrow = document.getElementById('geminiArrow');
+  const open  = body.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
+}
+function saveGeminiKey() {
+  const val = document.getElementById('geminiKeyInput').value.trim();
+  if (val.length < 20) { alert('That key looks too short. Please copy it from aistudio.google.com.'); return; }
+  localStorage.setItem('cfwGeminiKey', val);
+  document.getElementById('geminiBody').classList.remove('open');
+  document.getElementById('geminiArrow').textContent = '▼';
+  alert('✅ Gemini API key saved!');
+}
+(function() {
+  const k = localStorage.getItem('cfwGeminiKey');
+  if (k) document.getElementById('geminiKeyInput').value = k;
+})();
+
+// ── Enter key to submit ──
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const loginVisible = document.getElementById('loginCard').style.display !== 'none';
+  if (loginVisible) doLogin(); else doRegister();
+});
 </script>
 </body>
 </html>
