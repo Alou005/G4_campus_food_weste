@@ -33,7 +33,7 @@
     /* Viewfinder */
     .viewfinder-wrap {
       position: relative; margin: 0 20px; border-radius: 20px;
-      overflow: hidden; background: #000; flex-shrink: 0; height: 280px;
+      overflow: hidden; background: #000; flex-shrink: 0; height: 260px;
     }
     #videoFeed { width: 100%; height: 100%; object-fit: cover; display: block; }
     .scan-corners { position: absolute; inset: 0; pointer-events: none; }
@@ -77,11 +77,10 @@
       100% { transform: scale(2);   opacity: 0; }
     }
 
-    /* Meal selector notice */
+    /* Meal selector */
     .meal-selector {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 20px 2px;
-      flex-shrink: 0;
+      padding: 8px 20px 2px; flex-shrink: 0;
     }
     .meal-selector label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; }
     .meal-selector select {
@@ -91,12 +90,19 @@
       cursor: pointer;
     }
     .meal-selector select option { background: #222; color: #fff; }
+
+    /* ── Ready / Done badge ── */
     .meal-badge {
-      font-size: 11px; font-weight: 600; padding: 4px 10px;
-      border-radius: 20px; background: #ff9a00; color: #fff;
-      white-space: nowrap;
+      font-size: 11px; font-weight: 700; padding: 6px 14px;
+      border-radius: 20px; white-space: nowrap;
+      border: none; cursor: pointer; font-family: 'Poppins', sans-serif;
+      transition: opacity 0.2s, transform 0.1s;
+      /* default = orange "Ready" state */
+      background: #ff9a00; color: #fff;
     }
-    .meal-badge.done { background: #58b947; }
+    .meal-badge:active { transform: scale(0.95); }
+    /* When already scanned */
+    .meal-badge.done { background: #58b947; cursor: default; }
 
     /* Controls */
     .controls {
@@ -129,6 +135,7 @@
       border-radius: 20px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
       scrollbar-width: none; display: flex; flex-direction: column;
+      min-height: 0;
     }
     .result-panel::-webkit-scrollbar { display: none; }
     .result-idle {
@@ -168,10 +175,10 @@
       border-radius: 12px; padding: 10px 14px;
       display: flex; align-items: center; gap: 10px;
     }
-    .pts-earned-banner.high   { background: rgba(88,185,71,0.18); border: 1px solid #58b947; }
-    .pts-earned-banner.medium { background: rgba(255,154,0,0.18); border: 1px solid #ff9a00; }
-    .pts-earned-banner.low    { background: rgba(255,80,0,0.18);  border: 1px solid #ff5000; }
-    .pts-earned-banner.vlow   { background: rgba(200,0,0,0.18);   border: 1px solid #c00; }
+    .pts-earned-banner.high   { background: rgba(88,185,71,0.18);  border: 1px solid #58b947; }
+    .pts-earned-banner.medium { background: rgba(255,154,0,0.18);  border: 1px solid #ff9a00; }
+    .pts-earned-banner.low    { background: rgba(255,80,0,0.18);   border: 1px solid #ff5000; }
+    .pts-earned-banner.vlow   { background: rgba(200,0,0,0.18);    border: 1px solid #c00; }
     .pts-earned-icon { font-size: 22px; }
     .pts-earned-text { flex: 1; }
     .pts-earned-label { font-size: 12px; color: rgba(255,255,255,0.6); }
@@ -193,7 +200,7 @@
       font-size: 14px; font-weight: 700; cursor: pointer;
       display: none; width: calc(100% - 36px); transition: background 0.2s;
     }
-    .save-btn:hover { background: #4da83e; }
+    .save-btn:hover:not(:disabled) { background: #4da83e; }
     .save-btn.visible { display: block; }
     .save-btn:disabled { background: #555; cursor: not-allowed; }
 
@@ -256,7 +263,12 @@
       <option value="Lunch">☀️ Lunch</option>
       <option value="Dinner">🌙 Dinner</option>
     </select>
-    <span class="meal-badge" id="mealBadge">Ready</span>
+    <!--
+      The "Ready" badge is now a real <button>.
+      Tapping it when "Ready" starts the camera automatically.
+      When the meal is already scanned, it shows "✓ Done" and is non-interactive.
+    -->
+    <button class="meal-badge" id="mealBadge" onclick="handleBadgeTap()">Ready</button>
   </div>
 
   <!-- Controls -->
@@ -278,7 +290,7 @@
   <div class="result-panel">
     <div class="result-idle" id="resultIdle">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-18a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm-1 9h2v6h-2v-6z"/></svg>
-      Select a meal above, start the camera, then tap <strong style="color:#ff9a00">&nbsp;Analyse</strong>
+      Select a meal, start the camera, then tap <strong style="color:#ff9a00">&nbsp;Analyse</strong>
     </div>
     <div class="thinking" id="thinkingState">
       <div class="dots"><span></span><span></span><span></span></div>
@@ -306,7 +318,7 @@
         <span class="row-value" id="rowStatus">—</span>
       </div>
     </div>
-    <button class="save-btn" id="saveBtn" onclick="saveScan()">✓ Save & Add to Points</button>
+    <button class="save-btn" id="saveBtn" onclick="saveScan()">✓ Save &amp; Add to Points</button>
   </div>
 
   <!-- Bottom Nav -->
@@ -326,27 +338,37 @@
   </nav>
 
 <script>
-  let stream = null;
-  let facingMode = 'environment';
-  let cameraActive = false;
-  let pendingResult = null; // holds the result waiting to be saved
+  // ── globals ──
+  let stream        = null;
+  let facingMode    = 'environment';
+  let cameraActive  = false;
+  let pendingResult = null;
 
   // ── Scoring table ──
-  // wastePercent (0–100) → { label, points, tier }
+  // wastePercent 0-100 → { label, points, tier }
   function scoreFromWaste(pct) {
-    if (pct <= 10)  return { label: 'Eat clean',                points: 100, tier: 'high' };
-    if (pct <= 40)  return { label: 'Eat a little clean',       points: 60,  tier: 'medium' };
-    if (pct <= 80)  return { label: 'Eat left normal',          points: 30,  tier: 'low' };
-    return              { label: 'Too much food waste left',  points: 5,   tier: 'vlow' };
+    if (pct <= 10) return { label: 'Eat clean',               points: 100, tier: 'high'   };
+    if (pct <= 40) return { label: 'Eat a little clean',      points: 60,  tier: 'medium' };
+    if (pct <= 80) return { label: 'Eat left normal',         points: 30,  tier: 'low'    };
+    return               { label: 'Too much food waste left', points: 5,   tier: 'vlow'   };
   }
-
   const tierIcon = { high: '🌟', medium: '⭐', low: '🍽️', vlow: '😔' };
 
-  // ── State ──
+  // ── Auto-select meal by time of day ──
+  function autoSelectMeal() {
+    const h = new Date().getHours();
+    const select = document.getElementById('mealSelect');
+    if      (h < 11) select.value = 'Breakfast';
+    else if (h < 15) select.value = 'Lunch';
+    else             select.value = 'Dinner';
+  }
+  autoSelectMeal();
+
+  // ── State helpers ──
   function getState() {
     const today = new Date().toDateString();
-    const raw = localStorage.getItem('cfwState');
-    let state = raw ? JSON.parse(raw) : null;
+    let state = null;
+    try { state = JSON.parse(localStorage.getItem('cfwState')); } catch(e) {}
     if (!state || state.date !== today) {
       state = {
         date: today,
@@ -355,25 +377,43 @@
       };
       localStorage.setItem('cfwState', JSON.stringify(state));
     }
+    if (!state.meals) state.meals = { Breakfast: null, Lunch: null, Dinner: null };
     return state;
   }
-  function saveState(state) { localStorage.setItem('cfwState', JSON.stringify(state)); }
+  function saveState(s) { localStorage.setItem('cfwState', JSON.stringify(s)); }
 
-  // ── Meal badge update ──
+  // ── Meal badge ──
   function updateMealBadge() {
-    const meal = document.getElementById('mealSelect').value;
+    const meal  = document.getElementById('mealSelect').value;
     const state = getState();
     const badge = document.getElementById('mealBadge');
     if (state.meals[meal]) {
       badge.textContent = '✓ Done';
-      badge.className = 'meal-badge done';
+      badge.className   = 'meal-badge done';
+      badge.disabled    = true;
     } else {
       badge.textContent = 'Ready';
-      badge.className = 'meal-badge';
+      badge.className   = 'meal-badge';
+      badge.disabled    = false;
     }
   }
-  document.getElementById('mealSelect').addEventListener('change', updateMealBadge);
+  document.getElementById('mealSelect').addEventListener('change', () => {
+    updateMealBadge();
+    // If a result is already showing, update the meal label in it
+    if (pendingResult) {
+      pendingResult.meal = document.getElementById('mealSelect').value;
+      document.getElementById('rowMeal').textContent = pendingResult.meal;
+      refreshSaveBtn();
+    }
+  });
   updateMealBadge();
+
+  // Tapping "Ready" badge starts the camera
+  function handleBadgeTap() {
+    const badge = document.getElementById('mealBadge');
+    if (badge.classList.contains('done')) return; // already scanned
+    if (!cameraActive) startCamera();
+  }
 
   // ── Camera ──
   async function toggleCamera() {
@@ -392,7 +432,8 @@
       document.getElementById('scanLine').classList.add('active');
       document.getElementById('scanBtn').classList.add('scanning');
       document.getElementById('captureBtn').disabled = false;
-      document.getElementById('scanBtn').innerHTML = `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
+      document.getElementById('scanBtn').innerHTML =
+        `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
     } catch {
       alert('Camera access denied. Please allow camera permission and try again.');
     }
@@ -406,7 +447,8 @@
     document.getElementById('scanLine').classList.remove('active');
     document.getElementById('scanBtn').classList.remove('scanning');
     document.getElementById('captureBtn').disabled = true;
-    document.getElementById('scanBtn').innerHTML = `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
+    document.getElementById('scanBtn').innerHTML =
+      `<svg viewBox="0 0 24 24" fill="#fff" width="32" height="32"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
   }
   async function flipCamera() {
     facingMode = facingMode === 'environment' ? 'user' : 'environment';
@@ -416,19 +458,21 @@
   // ── Capture & Analyse ──
   async function captureAndAnalyze() {
     if (!cameraActive) return;
+
+    // Flash pulse
     const pulse = document.getElementById('pulseRing');
     pulse.classList.add('active');
     setTimeout(() => pulse.classList.remove('active'), 1200);
 
-    const video = document.getElementById('videoFeed');
+    // Grab frame
+    const video  = document.getElementById('videoFeed');
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
+    canvas.width  = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     const base64Image = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
 
     showState('thinking');
-
     const meal = document.getElementById('mealSelect').value;
 
     try {
@@ -444,42 +488,46 @@
               { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64Image } },
               { type: 'text', text: `You are a food recognition AI for a university campus food tracking app.
 
-The student says this is their "${meal}". Analyze the image.
+The student says this is their "${meal}". Analyse the image carefully.
 
-Respond ONLY with a valid JSON object (no markdown, no backticks, no explanation):
+Respond ONLY with a valid JSON object (no markdown fences, no extra text):
 {
   "name": "Name of the food item shown",
-  "wastePercent": <integer 0-100 estimating how much food waste is left on the plate/tray. 0 = plate is completely clean / food fully eaten. 100 = almost nothing eaten>,
+  "wastePercent": <integer 0-100 — how much food waste/leftovers remain. 0 = plate fully eaten, 100 = almost nothing eaten>,
   "statusNote": "A short friendly note about the eating status"
 }
 
-If you cannot identify food in the image, return:
-{"name": "No food detected", "wastePercent": 100, "statusNote": "Please point the camera at a food item"}` }
+If no food is detected, return:
+{"name":"No food detected","wastePercent":100,"statusNote":"Please point the camera at a food item"}` }
             ]
           }]
         })
       });
 
       const data = await response.json();
-      const raw = data.content.map(b => b.text || '').join('');
+      const raw  = (data.content || []).map(b => b.text || '').join('');
       let ai;
       try { ai = JSON.parse(raw.replace(/```json|```/g, '').trim()); }
-      catch { ai = { name: 'Analysis error', wastePercent: 100, statusNote: 'Could not read result' }; }
+      catch { ai = { name: 'Analysis error', wastePercent: 100, statusNote: 'Could not parse result' }; }
 
-      const score = scoreFromWaste(ai.wastePercent);
+      const score   = scoreFromWaste(ai.wastePercent);
       pendingResult = {
         meal,
-        foodName: ai.name,
+        foodName:     ai.name,
         wastePercent: ai.wastePercent,
-        statusNote: ai.statusNote,
-        label: score.label,
-        points: score.points,
-        tier: score.tier
+        statusNote:   ai.statusNote,
+        label:        score.label,    // e.g. "Eat clean"
+        points:       score.points,   // e.g. 100
+        tier:         score.tier      // e.g. "high"
       };
       displayResult(pendingResult);
-    } catch {
+
+    } catch(err) {
       pendingResult = null;
-      displayResult({ meal, foodName: 'Connection error', wastePercent: 100, statusNote: '—', label: '—', points: 0, tier: 'vlow' });
+      displayResult({
+        meal, foodName: 'Connection error', wastePercent: 100,
+        statusNote: 'Check your internet and try again', label: '—', points: 0, tier: 'vlow'
+      });
     }
   }
 
@@ -489,63 +537,76 @@ If you cannot identify food in the image, return:
     // Points banner
     const banner = document.getElementById('ptsBanner');
     banner.className = 'pts-earned-banner ' + (r.tier || 'vlow');
-    document.getElementById('ptsIcon').textContent = tierIcon[r.tier] || '⭐';
+    document.getElementById('ptsIcon').textContent  = tierIcon[r.tier] || '⭐';
     document.getElementById('ptsLabel').textContent = r.label;
     document.getElementById('ptsValue').textContent = r.points > 0 ? `+${r.points} pts` : '—';
 
-    document.getElementById('rowMeal').textContent = r.meal;
-    document.getElementById('rowWaste').textContent = r.wastePercent + '% waste left';
+    document.getElementById('rowMeal').textContent   = r.meal;
+    document.getElementById('rowWaste').textContent  = r.wastePercent + '% waste left';
     document.getElementById('rowStatus').textContent = r.statusNote;
 
-    // Show save button only if this meal hasn't been saved yet
-    const state = getState();
+    refreshSaveBtn();
+    showState('result');
+  }
+
+  function refreshSaveBtn() {
     const saveBtn = document.getElementById('saveBtn');
-    if (state.meals[r.meal]) {
-      saveBtn.textContent = '✓ Already saved for ' + r.meal;
-      saveBtn.disabled = true;
+    if (!pendingResult) { saveBtn.classList.remove('visible'); return; }
+    const state = getState();
+    const meal  = pendingResult.meal;
+
+    if (state.meals[meal]) {
+      // Already saved for this meal
+      saveBtn.textContent = `✓ Already saved for ${meal}`;
+      saveBtn.disabled    = true;
       saveBtn.classList.add('visible');
-    } else if (r.points > 0) {
-      saveBtn.textContent = `✓ Save & Add +${r.points} pts to ${r.meal}`;
-      saveBtn.disabled = false;
+    } else if (pendingResult.points > 0) {
+      saveBtn.textContent = `✓ Save & Add +${pendingResult.points} pts for ${meal}`;
+      saveBtn.disabled    = false;
       saveBtn.classList.add('visible');
     } else {
       saveBtn.classList.remove('visible');
     }
-
-    showState('result');
   }
 
+  // ── Save scan to localStorage ──
   function saveScan() {
     if (!pendingResult) return;
     const state = getState();
-    const meal = pendingResult.meal;
+    const meal  = pendingResult.meal;
+
     if (state.meals[meal]) {
       alert(`${meal} has already been recorded today.`);
       return;
     }
+
+    // Store ALL needed fields so Home + Profile can read them
     state.meals[meal] = {
-      foodName: pendingResult.foodName,
-      label: pendingResult.label,
-      points: pendingResult.points,
-      tier: pendingResult.tier
+      foodName:     pendingResult.foodName,
+      label:        pendingResult.label,    // "Eat clean" etc.
+      points:       pendingResult.points,
+      tier:         pendingResult.tier,
+      wastePercent: pendingResult.wastePercent,
+      statusNote:   pendingResult.statusNote
     };
     state.totalPoints = (state.totalPoints || 0) + pendingResult.points;
     saveState(state);
 
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.textContent = `✓ Saved! +${pendingResult.points} pts added`;
-    saveBtn.disabled = true;
+    saveBtn.disabled    = true;
     updateMealBadge();
 
-    // Brief toast then redirect home
+    // Go home after brief feedback
     setTimeout(() => { window.location.href = 'index.html'; }, 1200);
   }
 
-  function showState(state) {
-    document.getElementById('resultIdle').style.display    = state === 'idle'    ? 'flex' : 'none';
-    document.getElementById('thinkingState').style.display = state === 'thinking' ? 'flex' : 'none';
-    document.getElementById('resultContent').classList.toggle('visible', state === 'result');
-    if (state !== 'result') document.getElementById('saveBtn').classList.remove('visible');
+  // ── UI state switcher ──
+  function showState(st) {
+    document.getElementById('resultIdle').style.display     = st === 'idle'     ? 'flex' : 'none';
+    document.getElementById('thinkingState').style.display  = st === 'thinking' ? 'flex' : 'none';
+    document.getElementById('resultContent').classList.toggle('visible', st === 'result');
+    if (st !== 'result') document.getElementById('saveBtn').classList.remove('visible');
   }
 </script>
 </body>

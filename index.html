@@ -105,6 +105,8 @@
     .meal-left { display: flex; flex-direction: column; }
     .meal-name { font-size: 15px; font-weight: 500; color: #fff; }
     .meal-pts { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    /* when meal is done, show the eating status label in a nicer colour */
+    .meal-pts.done { color: #ffcc00; }
     .checkbox {
       width: 28px; height: 28px; border-radius: 7px;
       border: 2px solid rgba(255,255,255,0.45);
@@ -286,12 +288,11 @@
   document.getElementById('todayDate').textContent =
     `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
 
-  // ── State from localStorage ──
+  // ── State helpers ──
   function getState() {
     const today = new Date().toDateString();
-    const raw = localStorage.getItem('cfwState');
-    let state = raw ? JSON.parse(raw) : null;
-    // Reset daily meals if it's a new day
+    let state = null;
+    try { state = JSON.parse(localStorage.getItem('cfwState')); } catch(e) {}
     if (!state || state.date !== today) {
       state = {
         date: today,
@@ -300,6 +301,8 @@
       };
       localStorage.setItem('cfwState', JSON.stringify(state));
     }
+    // Ensure meals object always has all keys
+    if (!state.meals) state.meals = { Breakfast: null, Lunch: null, Dinner: null };
     return state;
   }
 
@@ -307,40 +310,46 @@
     const state = getState();
     const meals = state.meals;
 
-    // Checkboxes + subtitles
+    // Meal rows: key = meal name, cb = checkbox id, pts = subtitle id
     const map = {
       Breakfast: { cb: 'cbBreakfast', pts: 'bfPts' },
       Lunch:     { cb: 'cbLunch',     pts: 'lunchPts' },
       Dinner:    { cb: 'cbDinner',    pts: 'dinnerPts' }
     };
-    let todayPts = 0;
+
+    let todayPts  = 0;
     let scansDone = 0;
+
     for (const [meal, ids] of Object.entries(map)) {
-      const data = meals[meal];
-      const cb = document.getElementById(ids.cb);
+      const data  = meals[meal];          // null  OR  { foodName, label, points, tier }
+      const cb    = document.getElementById(ids.cb);
       const ptsEl = document.getElementById(ids.pts);
-      if (data) {
+
+      if (data && data.points != null) {
         cb.classList.add('checked');
+        // Show eating-status label + points, e.g. "Eat clean · +100 pts"
         ptsEl.textContent = `${data.label} · +${data.points} pts`;
-        todayPts += data.points;
-        scansDone++;
+        ptsEl.classList.add('done');
+        todayPts  += data.points;
+        scansDone += 1;
       } else {
         cb.classList.remove('checked');
         ptsEl.textContent = 'Not scanned yet';
+        ptsEl.classList.remove('done');
       }
     }
 
     // Score card
     const maxPts = 300;
-    const pct = Math.round((todayPts / maxPts) * 100);
-    document.getElementById('scorePercent').textContent = pct + '%';
+    const pct    = Math.round((todayPts / maxPts) * 100);
+    document.getElementById('scorePercent').textContent   = pct + '%';
     document.getElementById('scoreBreakdown').textContent =
       `${todayPts} / ${maxPts} pts today (${scansDone} scan${scansDone !== 1 ? 's' : ''} done)`;
-    document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('progressFill').style.width   = Math.min(pct, 100) + '%';
 
     const labels = ['Keep going!', 'Nice start!', 'Halfway there!', 'Almost done!', 'Perfect day! 🎉'];
-    document.getElementById('progressLabel').textContent =
-      scansDone === 3 ? labels[4] : labels[scansDone];
+    document.getElementById('progressLabel').textContent  =
+      scansDone >= 3 ? labels[4] : labels[scansDone];
   }
 
   renderHome();

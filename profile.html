@@ -76,7 +76,7 @@
     .info-value { font-weight: 600; color: #fff; }
     .info-value.pts { color: #ffcc00; font-size: 15px; }
 
-    /* Today summary inside profile card */
+    /* Today summary */
     .today-summary {
       margin-top: 14px; padding-top: 14px;
       border-top: 1px solid rgba(255,255,255,0.1);
@@ -85,15 +85,22 @@
       font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
       color: rgba(255,255,255,0.35); margin-bottom: 10px; font-weight: 600;
     }
-    .meal-pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .meal-pill-row { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Each pill now shows more info when done */
     .meal-pill {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.07); border-radius: 20px;
-      padding: 5px 12px; font-size: 12px; font-weight: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.07); border-radius: 12px;
+      padding: 8px 14px; font-size: 12px; font-weight: 500;
       color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
     }
-    .meal-pill.done { background: rgba(88,185,71,0.18); color: #7de86a; border-color: #58b947; }
-    .meal-pill .pill-pts { font-weight: 700; }
+    .meal-pill.done {
+      background: rgba(88,185,71,0.15); color: #7de86a; border-color: #58b947;
+    }
+    .meal-pill .pill-left  { display: flex; align-items: center; gap: 6px; }
+    .meal-pill .pill-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .pill-pts   { font-weight: 700; font-size: 13px; }
+    .pill-label { font-size: 10px; opacity: 0.7; }
 
     /* Menu card */
     .menu-card { background: #fff; border-radius: 20px; overflow: hidden; }
@@ -192,9 +199,7 @@
       <div class="today-summary">
         <div class="today-summary-title">Today's Scans</div>
         <div class="meal-pill-row" id="mealPillRow">
-          <div class="meal-pill" id="pillBreakfast">🌅 Breakfast</div>
-          <div class="meal-pill" id="pillLunch">☀️ Lunch</div>
-          <div class="meal-pill" id="pillDinner">🌙 Dinner</div>
+          <!-- rendered by JS -->
         </div>
       </div>
     </div>
@@ -231,7 +236,7 @@
       </div>
     </div>
 
-  </div><!-- end .screen-content -->
+  </div>
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav" aria-label="Main navigation">
@@ -250,10 +255,11 @@
   </nav>
 
 <script>
+  // ── State helper (same reset logic as other pages) ──
   function getState() {
     const today = new Date().toDateString();
-    const raw = localStorage.getItem('cfwState');
-    let state = raw ? JSON.parse(raw) : null;
+    let state = null;
+    try { state = JSON.parse(localStorage.getItem('cfwState')); } catch(e) {}
     if (!state || state.date !== today) {
       state = {
         date: today,
@@ -262,45 +268,62 @@
       };
       localStorage.setItem('cfwState', JSON.stringify(state));
     }
+    if (!state.meals) state.meals = { Breakfast: null, Lunch: null, Dinner: null };
     return state;
   }
 
+  const MEAL_META = {
+    Breakfast: { icon: '🌅' },
+    Lunch:     { icon: '☀️' },
+    Dinner:    { icon: '🌙' }
+  };
+
   function renderProfile() {
     const state = getState();
-    document.getElementById('totalPtsDisplay').textContent = (state.totalPoints || 0) + ' pts';
-    document.getElementById('totalPtsCard').textContent = (state.totalPoints || 0) + ' pts';
 
-    // Today's points
+    // Total points
+    document.getElementById('totalPtsDisplay').textContent = (state.totalPoints || 0) + ' pts';
+    document.getElementById('totalPtsCard').textContent    = (state.totalPoints || 0) + ' pts';
+
+    // Today's earned points
     let todayPts = 0;
-    const meals = state.meals;
-    for (const m of Object.values(meals)) { if (m) todayPts += m.points; }
+    for (const m of Object.values(state.meals)) { if (m) todayPts += (m.points || 0); }
     document.getElementById('todayPtsDisplay').textContent = `+${todayPts} today`;
 
-    // Meal pills
-    const pillMap = {
-      Breakfast: { id: 'pillBreakfast', icon: '🌅' },
-      Lunch:     { id: 'pillLunch',     icon: '☀️' },
-      Dinner:    { id: 'pillDinner',    icon: '🌙' }
-    };
-    for (const [meal, cfg] of Object.entries(pillMap)) {
-      const el = document.getElementById(cfg.id);
-      const data = meals[meal];
+    // Meal pills — now richer when done
+    const row = document.getElementById('mealPillRow');
+    row.innerHTML = '';
+
+    for (const [meal, meta] of Object.entries(MEAL_META)) {
+      const data = state.meals[meal]; // null or { label, points, foodName, … }
+      const pill = document.createElement('div');
+
       if (data) {
-        el.className = 'meal-pill done';
-        el.textContent = `${cfg.icon} ${meal} · +${data.points} pts`;
+        pill.className = 'meal-pill done';
+        pill.innerHTML = `
+          <div class="pill-left">
+            <span>${meta.icon} ${meal}</span>
+            <span style="opacity:0.6;font-size:11px;">· ${data.foodName || ''}</span>
+          </div>
+          <div class="pill-right">
+            <span class="pill-pts">+${data.points} pts</span>
+            <span class="pill-label">${data.label}</span>
+          </div>`;
       } else {
-        el.className = 'meal-pill';
-        el.textContent = `${cfg.icon} ${meal}`;
+        pill.className = 'meal-pill';
+        pill.innerHTML = `
+          <div class="pill-left"><span>${meta.icon} ${meal}</span></div>
+          <div class="pill-right"><span class="pill-label" style="opacity:0.4;">Not scanned</span></div>`;
       }
+      row.appendChild(pill);
     }
   }
 
   function resetPoints() {
-    if (!confirm('Reset today\'s scans and points for dev testing?')) return;
+    if (!confirm("Reset today's scans and points for dev testing?")) return;
     const state = getState();
-    // Subtract today's earned points from total
     let todayPts = 0;
-    for (const m of Object.values(state.meals)) { if (m) todayPts += m.points; }
+    for (const m of Object.values(state.meals)) { if (m) todayPts += (m.points || 0); }
     state.totalPoints = Math.max(0, (state.totalPoints || 0) - todayPts);
     state.meals = { Breakfast: null, Lunch: null, Dinner: null };
     localStorage.setItem('cfwState', JSON.stringify(state));
