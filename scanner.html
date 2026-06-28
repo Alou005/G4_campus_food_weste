@@ -16,8 +16,6 @@
 
     /* ══════════════════════════════════════
        API KEY SETUP OVERLAY
-       Shown as a full-screen modal BEFORE
-       the user can scan food.
     ══════════════════════════════════════ */
     .key-overlay {
       position: fixed; inset: 0; z-index: 100;
@@ -29,8 +27,6 @@
     }
     .key-overlay::-webkit-scrollbar { display: none; }
     .key-overlay.hidden { display: none; }
-
-    /* Glow */
     .key-overlay::before {
       content: ''; position: fixed; top: -100px; left: 50%;
       transform: translateX(-50%); width: 300px; height: 300px;
@@ -38,13 +34,10 @@
       background: radial-gradient(circle, rgba(255,154,0,0.2) 0%, transparent 70%);
       pointer-events: none;
     }
-
     .key-overlay-inner {
       width: 100%; max-width: 420px;
       display: flex; flex-direction: column; align-items: center; gap: 20px;
     }
-
-    /* Icon + title */
     .key-icon {
       width: 72px; height: 72px; border-radius: 20px;
       background: linear-gradient(135deg, #ff9a00, #c43000);
@@ -60,8 +53,6 @@
       font-size: 13px; color: rgba(255,255,255,0.45);
       text-align: center; line-height: 1.6; margin-top: -10px;
     }
-
-    /* Steps card */
     .key-steps {
       width: 100%;
       background: rgba(255,255,255,0.05);
@@ -72,9 +63,7 @@
       font-size: 11px; font-weight: 700; text-transform: uppercase;
       letter-spacing: 1.2px; color: rgba(255,255,255,0.35); margin-bottom: 14px;
     }
-    .step-row {
-      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px;
-    }
+    .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
     .step-row:last-child { margin-bottom: 0; }
     .step-num {
       width: 26px; height: 26px; border-radius: 50%;
@@ -85,8 +74,6 @@
     .step-text { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
     .step-text a { color: #ff9a00; font-weight: 600; text-decoration: none; }
     .step-text strong { color: #fff; }
-
-    /* Key input card */
     .key-input-card {
       width: 100%;
       background: rgba(255,255,255,0.05);
@@ -108,14 +95,11 @@
     }
     .key-input-row input::placeholder { color: rgba(255,255,255,0.3); }
     .key-input-row input:focus { border-color: #ff9a00; }
-    /* Eye toggle inside input */
     .key-eye {
       position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
       color: rgba(255,255,255,0.35); font-size: 16px; line-height: 1; padding: 4px;
     }
-
-    /* Save key button */
     .key-save-btn {
       width: 100%; margin-top: 12px; padding: 15px;
       background: linear-gradient(135deg, #ff9a00, #c43000);
@@ -126,17 +110,14 @@
     }
     .key-save-btn:hover { opacity: 0.92; }
     .key-save-btn:active { transform: scale(0.98); }
-
-    /* Key error */
     .key-err {
       display: none; background: rgba(200,0,0,0.15);
       border: 1px solid #c00; border-radius: 10px;
       padding: 10px 14px; font-size: 12px; color: #ff7070;
       margin-top: 10px; line-height: 1.5; width: 100%;
+      word-break: break-word;
     }
     .key-err.visible { display: block; }
-
-    /* Already have key — skip link */
     .key-skip {
       font-size: 12px; color: rgba(255,255,255,0.35);
       text-align: center; margin-top: -8px;
@@ -148,10 +129,8 @@
     }
 
     /* ══════════════════════════════════════
-       SCANNER PAGE (behind overlay)
+       SCANNER PAGE
     ══════════════════════════════════════ */
-
-    /* Header */
     .header {
       display: flex; align-items: center; justify-content: center;
       position: relative;
@@ -165,11 +144,7 @@
       background: rgba(255,255,255,0.1);
       display: flex; align-items: center; justify-content: center; text-decoration: none;
     }
-    .page-title {
-      font-family: 'Playfair Display', serif; font-size: 20px;
-      font-weight: 700; color: #fff;
-    }
-    /* Key status pill in header */
+    .page-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; }
     .key-pill {
       position: absolute; right: 20px; bottom: 10px;
       background: rgba(88,185,71,0.15); border: 1px solid #58b947;
@@ -180,7 +155,6 @@
     .key-pill.visible { display: flex; align-items: center; gap: 5px; }
     .key-pill:hover { background: rgba(88,185,71,0.25); }
 
-    /* Viewfinder */
     .viewfinder-wrap {
       position: relative; margin: 0 16px; border-radius: 20px;
       overflow: hidden; background: #000; flex-shrink: 0; height: 220px;
@@ -216,8 +190,6 @@
       border: 3px solid #ff9a00; animation: pulse 1.2s ease-out infinite;
     }
     @keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-
-    /* Camera LIVE badge */
     .cam-status {
       position: absolute; top: 10px; right: 10px;
       background: rgba(0,0,0,0.65); border-radius: 20px;
@@ -229,7 +201,6 @@
     .cam-status.live .dot { animation: blink 1.2s ease-in-out infinite; }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-    /* Meal selector */
     .meal-selector {
       display: flex; align-items: center; gap: 8px;
       padding: 8px 16px 4px; flex-shrink: 0;
@@ -242,7 +213,6 @@
     }
     .meal-selector select option { background: #222; color: #fff; }
 
-    /* Controls */
     .controls {
       display: flex; align-items: center; justify-content: center;
       gap: 16px; padding: 8px 16px 6px; flex-shrink: 0;
@@ -267,7 +237,6 @@
     .scan-fab svg { width: 30px; height: 30px; fill: #fff; }
     .scan-fab.scanning { background: #cc3300; box-shadow: 0 6px 24px rgba(204,51,0,0.5); }
 
-    /* Result Panel */
     .result-panel {
       flex: 1; overflow-y: auto; overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -277,7 +246,6 @@
       scrollbar-width: none; display: flex; flex-direction: column; min-height: 0;
     }
     .result-panel::-webkit-scrollbar { display: none; }
-
     .result-idle {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 8px;
@@ -285,7 +253,6 @@
       padding: 20px; line-height: 1.7;
     }
     .result-idle svg { width: 36px; height: 36px; opacity: 0.2; margin-bottom: 4px; }
-
     .thinking {
       display: none; flex-direction: column; align-items: center;
       justify-content: center; gap: 12px; padding: 30px; flex: 1;
@@ -302,10 +269,8 @@
       0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
       40%            { transform: translateY(-8px); opacity: 1; }
     }
-
     .result-content { display: none; flex-direction: column; }
     .result-content.visible { display: flex; }
-
     .result-food-name {
       font-size: 15px; font-weight: 700; color: #fff;
       padding: 14px 18px 4px; letter-spacing: 0.3px; word-break: break-word;
@@ -322,7 +287,6 @@
     .pts-earned-text { flex: 1; min-width: 0; }
     .pts-earned-label { font-size: 12px; color: rgba(255,255,255,0.6); }
     .pts-earned-value { font-size: 18px; font-weight: 700; color: #fff; }
-
     .result-row {
       display: flex; align-items: flex-start; justify-content: space-between;
       padding: 11px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); gap: 12px;
@@ -334,8 +298,6 @@
       margin: 0 18px 14px; font-size: 12px; color: rgba(255,255,255,0.5);
       line-height: 1.6; word-break: break-word;
     }
-
-    /* Save button */
     .save-btn {
       margin: 0 18px 16px; background: #58b947; color: #fff; border: none;
       border-radius: 14px; padding: 14px 12px; font-family: 'Poppins', sans-serif;
@@ -346,7 +308,17 @@
     .save-btn.visible { display: block; }
     .save-btn:disabled { background: #444; color: rgba(255,255,255,0.4); cursor: not-allowed; }
 
-    /* Bottom Nav */
+    /* Debug log box — visible in browser for easy copying */
+    .debug-box {
+      display: none;
+      margin: 0 16px 8px; padding: 10px 14px;
+      background: rgba(0,0,0,0.6); border: 1px solid rgba(255,154,0,0.3);
+      border-radius: 14px; font-size: 10px; color: rgba(255,154,0,0.8);
+      font-family: monospace; white-space: pre-wrap; word-break: break-all;
+      max-height: 120px; overflow-y: auto; flex-shrink: 0;
+    }
+    .debug-box.visible { display: block; }
+
     .bottom-nav {
       background: #1a1a1a; display: flex; align-items: center;
       justify-content: space-between; padding: 0 44px;
@@ -371,28 +343,20 @@
 </head>
 <body>
 
-  <!-- ══════════════════════════════════════════
-       API KEY SETUP OVERLAY
-       Visible only when no key is saved yet
-  ══════════════════════════════════════════ -->
+  <!-- API KEY OVERLAY -->
   <div class="key-overlay" id="keyOverlay">
     <div class="key-overlay-inner">
-
       <div class="key-icon">🔑</div>
       <div class="key-title">Set Up Food Scanner</div>
       <div class="key-sub">
         A free Gemini API key is needed to identify<br>
         your food and calculate your waste score.
       </div>
-
-      <!-- Steps -->
       <div class="key-steps">
         <div class="key-steps-title">How to get your free key</div>
         <div class="step-row">
           <div class="step-num">1</div>
-          <div class="step-text">
-            Go to <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a>
-          </div>
+          <div class="step-text">Go to <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
         </div>
         <div class="step-row">
           <div class="step-num">2</div>
@@ -404,36 +368,25 @@
         </div>
         <div class="step-row">
           <div class="step-num">4</div>
-          <div class="step-text">Paste it below and tap <strong>"Save & Start Scanning"</strong></div>
+          <div class="step-text">Paste it below and tap <strong>"Save &amp; Start Scanning"</strong></div>
         </div>
       </div>
-
-      <!-- Input card -->
       <div class="key-input-card">
         <div class="key-input-label">Paste your Gemini API Key here</div>
         <div class="key-input-row">
-          <input type="password" id="overlayKeyInput"
-                 placeholder="AIza... or AQ...."
-                 oninput="clearKeyErr()" />
+          <input type="password" id="overlayKeyInput" placeholder="AIza... or AQ...." oninput="clearKeyErr()" />
           <button class="key-eye" onclick="toggleKeyEye()" tabindex="-1">👁</button>
         </div>
         <div class="key-err" id="keyErr"></div>
-        <button class="key-save-btn" onclick="saveOverlayKey()">
-          Save &amp; Start Scanning →
-        </button>
+        <button class="key-save-btn" onclick="saveOverlayKey()">Save &amp; Start Scanning →</button>
       </div>
-
       <div class="key-skip" id="keySkip" style="display:none;">
         Key already saved? <button onclick="dismissOverlay()">Skip this step</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       SCANNER PAGE
-  ══════════════════════════════════════════ -->
-
+  <!-- SCANNER PAGE -->
   <div class="header">
     <a href="index.html" class="back-btn" onclick="stopCamera()">
       <svg viewBox="0 0 24 24" fill="#fff" width="18" height="18">
@@ -441,13 +394,9 @@
       </svg>
     </a>
     <span class="page-title">Food Scanner</span>
-    <!-- Key status pill — tap to re-enter key -->
-    <div class="key-pill" id="keyPill" onclick="showKeyOverlay()">
-      🔑 Key ✓
-    </div>
+    <div class="key-pill" id="keyPill" onclick="showKeyOverlay()">🔑 Key ✓</div>
   </div>
 
-  <!-- Viewfinder -->
   <div class="viewfinder-wrap">
     <video id="videoFeed" autoplay playsinline muted></video>
     <div class="cam-placeholder" id="camPlaceholder">
@@ -465,7 +414,6 @@
     <div class="pulse-ring" id="pulseRing"></div>
   </div>
 
-  <!-- Meal selector -->
   <div class="meal-selector">
     <label for="mealSelect">Meal:</label>
     <select id="mealSelect">
@@ -475,7 +423,6 @@
     </select>
   </div>
 
-  <!-- Controls: Flip | Camera FAB | Analyse -->
   <div class="controls">
     <button class="ctrl-btn" onclick="flipCamera()">
       <svg viewBox="0 0 24 24"><path d="M7.11 8.53 5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42A5.2 5.2 0 0 1 6.09 13zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c2.84.48 5 2.94 5 5.91s-2.16 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93s-3.05-7.44-7-7.93z"/></svg>
@@ -490,7 +437,9 @@
     </button>
   </div>
 
-  <!-- Result Panel -->
+  <!-- Debug log — shows full API response on screen -->
+  <div class="debug-box" id="debugBox"></div>
+
   <div class="result-panel" id="resultPanel">
     <div class="result-idle" id="resultIdle">
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-18a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm-1 9h2v6h-2v-6z"/></svg>
@@ -526,7 +475,6 @@
     <button class="save-btn" id="saveBtn" onclick="saveScan()">💾 Save to Home &amp; Profile</button>
   </div>
 
-  <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item" onclick="stopCamera()">
       <img src="Element/Home.png" alt="Home" width="28" height="20" onerror="this.style.display='none'" />
@@ -544,50 +492,60 @@
 
 <script>
   // ════════════════════════════════════════════
-  //  OPTIONAL: hardcode your key here to skip
-  //  the overlay entirely on every visit.
-  //  Get a free key: aistudio.google.com/app/apikey
+  //  Paste your key here to skip the overlay:
+  //  const HARDCODED_KEY = 'AIza...';
   // ════════════════════════════════════════════
   const HARDCODED_KEY = '';
 
-  // ── API Key helpers ──────────────────────────
+  // ── Model list — tried in order until one works ──
+  // If the first model returns a quota/permission error, the next is tried automatically.
+  const GEMINI_MODELS = [
+    'gemini-2.5-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-flash-8b',
+  ];
+
+  // ── Debug log ─────────────────────────────────
+  function debugLog(label, data) {
+    const box = document.getElementById('debugBox');
+    const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    box.textContent = `[${label}]\n${text}`;
+    box.classList.add('visible');
+    console.log(`[${label}]`, data);
+  }
+  function clearDebug() {
+    document.getElementById('debugBox').classList.remove('visible');
+  }
+
+  // ── API Key helpers ───────────────────────────
   function getApiKey() {
     return HARDCODED_KEY.trim() || (localStorage.getItem('cfwGeminiKey') || '').trim();
   }
 
-  // ── Overlay logic ────────────────────────────
+  // ── Overlay logic ─────────────────────────────
   function checkKeyOnLoad() {
     const key = getApiKey();
     if (key) {
-      // Key already saved — hide overlay, show pill
       document.getElementById('keyOverlay').classList.add('hidden');
       document.getElementById('keyPill').classList.add('visible');
     } else {
-      // No key — show overlay; hide skip link
       document.getElementById('keyOverlay').classList.remove('hidden');
       document.getElementById('keySkip').style.display = 'none';
     }
   }
-
   function showKeyOverlay() {
-    // When user taps the key pill to change their key
-    const overlay = document.getElementById('keyOverlay');
-    overlay.classList.remove('hidden');
-    // Show "skip" link since they already have a key
+    document.getElementById('keyOverlay').classList.remove('hidden');
     document.getElementById('keySkip').style.display = 'block';
-    // Pre-fill existing key
     const existing = localStorage.getItem('cfwGeminiKey') || '';
     document.getElementById('overlayKeyInput').value = existing;
     stopCamera();
   }
-
   function dismissOverlay() {
-    // Only allowed if a key is already saved
     if (!getApiKey()) return;
     document.getElementById('keyOverlay').classList.add('hidden');
     document.getElementById('keyPill').classList.add('visible');
   }
-
   function saveOverlayKey() {
     const val = document.getElementById('overlayKeyInput').value.trim();
     if (!val || val.length < 20) {
@@ -599,25 +557,19 @@
     document.getElementById('keyPill').classList.add('visible');
     clearKeyErr();
   }
-
   function showKeyErr(msg) {
     const el = document.getElementById('keyErr');
     el.textContent = msg; el.classList.add('visible');
   }
-  function clearKeyErr() {
-    document.getElementById('keyErr').classList.remove('visible');
-  }
+  function clearKeyErr() { document.getElementById('keyErr').classList.remove('visible'); }
   function toggleKeyEye() {
     const inp = document.getElementById('overlayKeyInput');
-    const btn = inp.nextElementSibling;
     inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    inp.nextElementSibling.textContent = inp.type === 'password' ? '👁' : '🙈';
   }
-
-  // Run key check on page load
   checkKeyOnLoad();
 
-  // ── Scoring tiers ────────────────────────────
+  // ── Scoring tiers ─────────────────────────────
   function scoreFromWaste(pct) {
     pct = Number(pct) || 0;
     if (pct <= 10) return { label: 'Eat clean',               points: 100, tier: 'high'   };
@@ -655,7 +607,6 @@
   async function toggleCamera() {
     if (cameraActive) stopCamera(); else await startCamera();
   }
-
   async function startCamera() {
     try {
       if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
@@ -686,39 +637,138 @@
       alert(msg);
     }
   }
-
   function stopCamera() {
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    document.getElementById('videoFeed').srcObject = null;
+    const v = document.getElementById('videoFeed');
+    if (v) v.srcObject = null;
     cameraActive = false;
-    document.getElementById('camPlaceholder').style.display = 'flex';
-    document.getElementById('scanLine').classList.remove('active');
-    document.getElementById('scanBtn').classList.remove('scanning');
-    document.getElementById('captureBtn').disabled = true;
+    const ph = document.getElementById('camPlaceholder');
+    if (ph) ph.style.display = 'flex';
+    const sl = document.getElementById('scanLine');
+    if (sl) sl.classList.remove('active');
+    const sb = document.getElementById('scanBtn');
+    if (sb) {
+      sb.classList.remove('scanning');
+      sb.innerHTML = `<svg viewBox="0 0 24 24" fill="#fff" width="30" height="30"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
+    }
+    const cb = document.getElementById('captureBtn');
+    if (cb) cb.disabled = true;
     updateCamStatus(false);
-    document.getElementById('scanBtn').innerHTML =
-      `<svg viewBox="0 0 24 24" fill="#fff" width="30" height="30"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm0-8.4a5.2 5.2 0 1 1 0 10.4A5.2 5.2 0 0 1 12 6.8zM9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9z"/></svg>`;
   }
-
   function updateCamStatus(live) {
     const el = document.getElementById('camStatus');
+    if (!el) return;
     el.className = live ? 'cam-status live' : 'cam-status';
     el.innerHTML = `<div class="dot"></div><span> ${live ? 'LIVE' : 'Off'}</span>`;
   }
-
   async function flipCamera() {
     facingMode = facingMode === 'environment' ? 'user' : 'environment';
     if (cameraActive) { stopCamera(); await startCamera(); }
   }
-
   window.addEventListener('beforeunload', stopCamera);
+
+  // ── Gemini API call with model fallback ───────
+  async function callGemini(key, base64Image, meal) {
+    const prompt = `You are a food recognition AI for a university campus food tracking app.
+The student says this is their "${meal}". Look at the plate or tray in the image.
+
+Reply ONLY with this exact JSON — no markdown, no code fences, no extra text:
+{"name":"<food name>","wastePercent":<integer 0-100>,"statusNote":"<short friendly note max 15 words>"}
+
+wastePercent = how much food is LEFT uneaten. 0 = plate completely clean. 100 = nothing eaten.
+If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"Please point the camera directly at your food plate"}`;
+
+    let lastError = null;
+
+    for (const model of GEMINI_MODELS) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+      debugLog(`Trying model: ${model}`, url);
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { text: prompt },
+              { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
+            ]}],
+            generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
+          })
+        });
+
+        // Always log the full raw response
+        const rawText = await res.text();
+        debugLog(`Response from ${model} (HTTP ${res.status})`, rawText);
+        console.log(`[${model}] HTTP ${res.status}:`, rawText);
+
+        let json;
+        try { json = JSON.parse(rawText); } catch(e) { json = { rawText }; }
+
+        if (!res.ok) {
+          const errMsg = json?.error?.message || `HTTP ${res.status}`;
+          const errCode = json?.error?.code || res.status;
+          console.warn(`[${model}] Error ${errCode}: ${errMsg}`);
+
+          // Auth/key error → show overlay immediately, stop trying
+          if (errCode === 400 || errCode === 401 || errCode === 403) {
+            showKeyOverlay();
+            showKeyErr(`Key rejected by Google: ${errMsg}`);
+            throw new Error('AUTH_ERROR: ' + errMsg);
+          }
+
+          // Quota error → try next model
+          if (errCode === 429 || (errMsg && errMsg.toLowerCase().includes('quota'))) {
+            lastError = new Error(`${model}: quota exceeded`);
+            continue; // try next model
+          }
+
+          // Model not found → try next
+          if (errCode === 404 || (errMsg && errMsg.toLowerCase().includes('not found'))) {
+            lastError = new Error(`${model}: not found`);
+            continue;
+          }
+
+          lastError = new Error(errMsg);
+          continue;
+        }
+
+        // Success — parse the AI text
+        const aiText = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        debugLog(`AI text from ${model}`, aiText);
+
+        let ai;
+        try {
+          const clean = aiText.replace(/```[a-z]*\n?/gi,'').replace(/```/g,'').trim();
+          ai = JSON.parse(clean);
+        } catch {
+          const match = aiText.match(/\{[\s\S]*\}/);
+          try { ai = match ? JSON.parse(match[0]) : null; } catch { ai = null; }
+        }
+
+        if (!ai || typeof ai.wastePercent === 'undefined') {
+          ai = { name: 'Could not parse result', wastePercent: 50, statusNote: 'Please try again' };
+        }
+
+        return { ai, modelUsed: model };
+
+      } catch(fetchErr) {
+        if (fetchErr.message.startsWith('AUTH_ERROR')) throw fetchErr;
+        console.error(`[${model}] fetch error:`, fetchErr);
+        lastError = fetchErr;
+        // continue to next model
+      }
+    }
+
+    // All models failed
+    throw lastError || new Error('All Gemini models failed. Check your API key and internet connection.');
+  }
 
   // ── Capture & Analyse ─────────────────────────
   let pendingResult = null;
 
   async function captureAndAnalyze() {
     if (!cameraActive) { alert('Please start the camera first.'); return; }
-
     const key = getApiKey();
     if (!key) { showKeyOverlay(); return; }
 
@@ -741,67 +791,18 @@
     ctx.drawImage(video, 0, 0);
     const base64Image = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
 
+    clearDebug();
     showState('thinking');
 
     try {
-      const GEMINI_URL =
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key}`;
-
-      const prompt = `You are a food recognition AI for a university campus food tracking app.
-The student says this is their "${meal}". Look at the plate or tray in the image.
-
-Reply ONLY with this exact JSON — no markdown, no code fences, no extra text:
-{"name":"<food name>","wastePercent":<integer 0-100>,"statusNote":"<short friendly note max 15 words>"}
-
-wastePercent = how much food is LEFT uneaten. 0 = plate completely clean. 100 = nothing eaten.
-If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"Please point the camera directly at your food plate"}`;
-
-      const res = await fetch(GEMINI_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { text: prompt },
-            { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
-          ]}],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
-        })
-      });
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        const msg = errBody?.error?.message || `HTTP ${res.status}`;
-        // If key is invalid, show the overlay again
-        if (res.status === 400 || res.status === 401 || res.status === 403) {
-          showState('idle');
-          showKeyOverlay();
-          showKeyErr('API key was rejected: ' + msg + '. Please enter a valid key.');
-          return;
-        }
-        throw new Error(msg);
-      }
-
-      const data = await res.json();
-      const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-      let ai;
-      try {
-        const clean = raw.replace(/```[a-z]*\n?/gi,'').replace(/```/g,'').trim();
-        ai = JSON.parse(clean);
-      } catch {
-        const match = raw.match(/\{[\s\S]*\}/);
-        try { ai = match ? JSON.parse(match[0]) : null; } catch { ai = null; }
-      }
-      if (!ai || typeof ai.wastePercent === 'undefined') {
-        ai = { name: 'Could not parse result', wastePercent: 50, statusNote: 'Please try again' };
-      }
+      const { ai, modelUsed } = await callGemini(key, base64Image, meal);
 
       const score = scoreFromWaste(ai.wastePercent);
       pendingResult = {
         meal,
         foodName:     String(ai.name        || 'Unknown food'),
         wastePercent: Number(ai.wastePercent) || 0,
-        statusNote:   String(ai.statusNote   || ''),
+        statusNote:   String(ai.statusNote   || '') + (modelUsed !== GEMINI_MODELS[0] ? ` [${modelUsed}]` : ''),
         label:        score.label,
         points:       score.points,
         tier:         score.tier
@@ -809,7 +810,9 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
       displayResult(pendingResult);
 
     } catch(err) {
-      console.error('Gemini error:', err);
+      if (err.message.startsWith('AUTH_ERROR')) return; // overlay already shown
+      console.error('Final error:', err);
+      debugLog('FINAL ERROR', err.message);
       pendingResult = null;
       showState('result');
       document.getElementById('foodName').textContent  = '⚠️ Analysis failed';
@@ -820,7 +823,7 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
       document.getElementById('rowMeal').textContent   = meal;
       document.getElementById('rowWaste').textContent  = '—';
       document.getElementById('rowStatus').textContent = err.message || 'Unknown error';
-      document.getElementById('statusNote').textContent = 'Check your API key and internet, then try again.';
+      document.getElementById('statusNote').textContent = 'All Gemini models were tried. Check your API key quota at ai.dev/rate-limit';
       document.getElementById('saveBtn').classList.remove('visible');
     }
   }
@@ -836,7 +839,6 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     document.getElementById('rowWaste').textContent  = r.wastePercent + '% food left on plate';
     document.getElementById('rowStatus').textContent = r.label;
     document.getElementById('statusNote').textContent = r.statusNote;
-
     const saveBtn = document.getElementById('saveBtn');
     const already = getState().meals[r.meal];
     saveBtn.textContent = already
@@ -848,7 +850,6 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     setTimeout(() => { document.getElementById('resultPanel').scrollTop = 0; }, 50);
   }
 
-  // ── Save to localStorage ──────────────────────
   function saveScan() {
     if (!pendingResult) return;
     const state = getState();
@@ -865,14 +866,12 @@ If no food visible: {"name":"No food detected","wastePercent":100,"statusNote":"
     for (const m of Object.values(state.meals)) { if (m) total += (m.points || 0); }
     state.totalPoints = total;
     saveState(state);
-
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.textContent = `✅ Saved! +${pendingResult.points} pts for ${meal}`;
     saveBtn.disabled    = true;
     setTimeout(() => { stopCamera(); window.location.href = 'index.html'; }, 1000);
   }
 
-  // ── UI state switcher ─────────────────────────
   function showState(st) {
     document.getElementById('resultIdle').style.display    = st === 'idle'     ? 'flex' : 'none';
     document.getElementById('thinkingState').style.display = st === 'thinking' ? 'flex' : 'none';
